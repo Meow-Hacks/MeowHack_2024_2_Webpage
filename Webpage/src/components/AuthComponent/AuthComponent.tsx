@@ -38,7 +38,11 @@ const AuthComponent: React.FC<AuthProps> = () => {
                 />
                 <button onClick={handleLogin}>Авторизоваться</button>
                 {error && <p>{error}</p>}
+                
             </div>
+            <div className="background-circle circle-blue"></div>
+            <div className="background-circle circle-orange"></div>
+            
         </>
     );
 }

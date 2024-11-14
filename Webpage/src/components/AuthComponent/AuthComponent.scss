@@ -1,50 +1,91 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #121212;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.auth-container {
+  background-color: rgba(30, 30, 30, 0.8);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 300px;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 10px 0;
+  padding-left: 10px;
+  padding-right: -20px;
+  margin: 20px 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: #ffffff;
+  font-size: 1em;
+  z-index: 0;
+}
+
+.auth-container button {
+  width: 80%;
+  padding: 12px;
+  margin: 30px 0 20px 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 100;
+}
+
+.auth-container p {
+      color: #ff4d4d;
+      z-index: 10;
+    }
   
-  .auth-container {
-    background-color: #1e1e1e;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-  }
-  
-  .auth-container h2 {
-    margin-bottom: 20px;
-  }
-  
-  .auth-container input {
-    width: 100%;
-    padding: 10px 0;
-    margin: 10px 0;
-    border: none;
-    border-radius: 4px;
-    background-color: #333;
-    color: #ffffff;
-  }
-  
-  .auth-container button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #555;
-    color: #ffffff;
-    cursor: pointer;
-  }
-  
-  .auth-container button:hover {
-    background-color: #777;
-  }
-  
-  .auth-container p {
-    color: #ff4d4d;
-  }
+
+.auth-container button:hover {
+  background-color: #e0e0e0;
+}
+
+.background-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.circle-blue {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  box-shadow: -20px -30px 100px #1857df;
+  background: radial-gradient(circle, #0066ff, #003399);
+  top: -450px;
+  left: -50px;
+}
+
+.circle-orange {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  box-shadow: 20px 30px 100px #fa9a09;
+  background: radial-gradient(circle, #ff9900, #cc6600);
+  bottom: 230px;
+  right: -260px;
+}
