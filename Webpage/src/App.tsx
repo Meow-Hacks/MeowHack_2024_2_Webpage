@@ -1,6 +1,7 @@
 import './App.css'
 import TableWidget from './components/TableWidget/TableWidget';
 import AuthPage from './pages/AuthPage';
+import DashboardPage from './pages/FamPage/FAM';
 
 const App: React.FC = () => {
   const columns = ["ID", "Name", "Age"];
@@ -26,6 +27,7 @@ const App: React.FC = () => {
         onExportToJson={() => console.log("Export to JSON")}
       /> */}
       <AuthPage />
+      {/* <DashboardPage />  */}
     </>
   )
 }
