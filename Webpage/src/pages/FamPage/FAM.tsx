@@ -1,4 +1,4 @@
-import * as React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';

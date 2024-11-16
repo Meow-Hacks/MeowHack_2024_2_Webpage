@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import './AuthComponent.scss';
 
-interface AuthProps {
-    login: string;
-    password: string;
-}
-
-const AuthComponent: React.FC<AuthProps> = () => {
+const AuthComponent: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
