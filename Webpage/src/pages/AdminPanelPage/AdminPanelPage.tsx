@@ -101,12 +101,12 @@ function SidebarFooterAccountPopover() {
   );
 }
 
-const createPreviewComponent = (mini: boolean) => {
-  function PreviewComponent(props: AccountPreviewProps) {
-    return <AccountSidebarPreview {...props} mini={mini} />;
-  }
-  return PreviewComponent;
-};
+// const createPreviewComponent = (mini: boolean) => {
+//   function PreviewComponent(props: AccountPreviewProps) {
+//     return <AccountSidebarPreview {...props} mini={mini} />;
+//   }
+//   return PreviewComponent;
+// };
 
 
 // TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
@@ -114,7 +114,7 @@ const createPreviewComponent = (mini: boolean) => {
 // TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
 
 function SidebarFooterAccount({ mini, onAccountClick }: SidebarFooterProps & { onAccountClick: () => void }) {
-  const PreviewComponent = React.useMemo(() => createPreviewComponent(mini), [mini]);
+  // const PreviewComponent = React.useMemo(() => createPreviewComponent(mini), [mini]);
 
   return (
     <Account
@@ -196,12 +196,12 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
 
   const demoWindow = window !== undefined ? window() : undefined;
   
-  const authentication = React.useMemo(() => {
-    return {
-      signIn: () => setSession(demoSession),
-      signOut: () => setSession(null),
-    };
-  }, []);
+  // const authentication = React.useMemo(() => {
+  //   return {
+  //     signIn: () => setSession(demoSession),
+  //     signOut: () => setSession(null),
+  //   };
+  // }, []);
 
   const handleSignOut = () => setSession(null);
 

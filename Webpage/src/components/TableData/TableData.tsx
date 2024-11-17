@@ -6,6 +6,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableFooter from '@mui/material/TableFooter';
+import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
@@ -81,25 +82,25 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-function createData(name: string, calories: number, fat: number) {
-  return { name, calories, fat };
+function createData(name: string, hours: number, abbility: string) {
+  return { name, hours, abbility };
 }
 
 const rows = [
-  createData('Cupcake', 305, 3.7),
-  createData('Donut', 452, 25.0),
-  createData('Eclair', 262, 16.0),
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Gingerbread', 356, 16.0),
-  createData('Honeycomb', 408, 3.2),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Jelly Bean', 375, 0.0),
-  createData('KitKat', 518, 26.0),
-  createData('Lollipop', 392, 0.2),
-  createData('Marshmallow', 318, 0),
-  createData('Nougat', 360, 19.0),
-  createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
+  createData('А-10', 12, 'зянят'),
+  createData('А-11', 24, 'зянят'),
+  createData('А-12', 32, 'свободен'),
+  createData('А-13', 12, 'зарезервирован'),
+  createData('А-14', 32, 'зарезервирован'),
+  createData('А-15', 21, 'зарезервирован'),
+  createData('В-217', 43, 'свободен'),
+  createData('В-415', 23, 'зянят'),
+  createData('И-210', 67, 'зарезервирован'),
+  createData('И-210-1', 32, 'зянят'),
+  createData('Б-21', 43, 'свободен'),
+  createData('Б-22', 12, 'зарезервирован'),
+  createData('Б-23', 65, 'зянят'),
+].sort((a, b) => (a.hours < b.hours ? -1 : 1));
 
 export default function CustomPaginationActionsTable() {
   const [page, setPage] = React.useState(0);
@@ -124,54 +125,51 @@ export default function CustomPaginationActionsTable() {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 500}} aria-label="custom pagination table">
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.calories}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.fat}
-              </TableCell>
+    <Box sx={{ p: 4 }}>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Тремболон</TableCell>
+              <TableCell align="right">Колю в</TableCell>
+              <TableCell align="right">Очко</TableCell>
             </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row.name}>
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right">{row.hours}</TableCell>
+                <TableCell align="right">{row.abbility}</TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={3} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                colSpan={3}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
             </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, 50]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
