@@ -111,7 +111,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     );
 }
 
-export default function CustomPaginationActionsTable() {
+export default function TableTest() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [open, setOpen] = React.useState(false);
