@@ -124,7 +124,7 @@ export default function CustomPaginationActionsTable() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ margin: "10px"}}>
+    <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500}} aria-label="custom pagination table">
         <TableBody>
           {(rowsPerPage > 0

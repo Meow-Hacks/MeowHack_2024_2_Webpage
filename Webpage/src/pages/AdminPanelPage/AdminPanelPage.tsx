@@ -15,7 +15,7 @@ import {
 } from '@toolpad/core/Account';
 import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import CustomPaginationActionsTable from '../../components/TableData/TableData'
 
@@ -47,13 +47,13 @@ const NAVIGATION: Navigation = [
         kind: 'page',
         segment: 'sales',
         title: 'Посещаемость',
-        icon: <DescriptionIcon />,
+        icon: <TableChartIcon />,
       },
       {
         kind: 'page',
         segment: 'traffic',
         title: 'Загруженость',
-        icon: <DescriptionIcon />,
+        icon: <TableChartIcon />,
       },
     ],
   },
@@ -108,12 +108,27 @@ const createPreviewComponent = (mini: boolean) => {
   return PreviewComponent;
 };
 
-function SidebarFooterAccount({ mini }: SidebarFooterProps) {
+
+// TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
+// TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
+// TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
+
+function SidebarFooterAccount({ mini, onAccountClick }: SidebarFooterProps & { onAccountClick: () => void }) {
   const PreviewComponent = React.useMemo(() => createPreviewComponent(mini), [mini]);
+
   return (
     <Account
       slots={{
-        preview: PreviewComponent,
+        preview: (props) => (
+          <Stack
+            onClick={onAccountClick} // Добавляем обработчик
+            sx={{
+              cursor: 'pointer', // Указываем, что элемент кликабельный
+            }}
+          >
+            <AccountSidebarPreview {...props} mini={mini} />
+          </Stack>
+        ),
         popoverContent: SidebarFooterAccountPopover,
       }}
       slotProps={{
@@ -127,7 +142,9 @@ function SidebarFooterAccount({ mini }: SidebarFooterProps) {
               sx: {
                 overflow: 'visible',
                 filter: (theme) =>
-                  `drop-shadow(0px 2px 8px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.32)'})`,
+                  `drop-shadow(0px 2px 8px ${
+                    theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.32)'
+                  })`,
                 mt: 1,
                 '&::before': {
                   content: '""',
@@ -154,7 +171,7 @@ interface DemoProps {
   window?: () => Window;
 }
 
-const demoSession = {
+const demoSession: Session = {
   user: {
     name: 'Админ 1',
     email: 'admin@edu.mirea.ru',
@@ -165,7 +182,9 @@ const demoSession = {
 export default function DashboardLayoutAccountSidebar(props: DemoProps) {
   const { window } = props;
 
-  const [pathname, setPathname] = React.useState('/dashboard');
+  const [pathname, setPathname] = React.useState('/adminpanel');
+  const [session, setSession] = React.useState<Session | null>(demoSession);
+  const [showAdminInfo, setShowAdminInfo] = React.useState(false);
 
   const router = React.useMemo<Router>(() => {
     return {
@@ -176,8 +195,7 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
   }, [pathname]);
 
   const demoWindow = window !== undefined ? window() : undefined;
-
-  const [session, setSession] = React.useState<Session | null>(demoSession);
+  
   const authentication = React.useMemo(() => {
     return {
       signIn: () => setSession(demoSession),
@@ -185,11 +203,29 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
     };
   }, []);
 
+  const handleSignOut = () => setSession(null);
+
   const activeSegment = router.pathname.split('/').pop();
+
+  const handleAccountClick = () => setShowAdminInfo(!showAdminInfo);
 
   const currentNav = NAVIGATION.find((nav) => nav.kind === 'page' && nav.segment === activeSegment);
 
+  React.useEffect(() => {
+    setShowAdminInfo(false);
+  }, [pathname]);
+
   const renderContent = () => {
+    if (showAdminInfo && session?.user) {
+      return (
+        <Box>
+          <Typography variant="h5">Информация об администраторе</Typography>
+          <Typography>Имя: {session.user.name}</Typography>
+          <Typography>Email: {session.user.email}</Typography>
+        </Box>
+      );
+    }
+
     if (activeSegment === 'sales') {
       return (
         <Box>
@@ -220,13 +256,21 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
-      authentication={authentication}
+      authentication={{
+        signIn: () => setSession(demoSession),
+        signOut: handleSignOut,
+      }}
       session={session}
     >
       <DashboardLayout
         slots={{
           toolbarAccount: () => null,
-          sidebarFooter: SidebarFooterAccount,
+          sidebarFooter: (props) => (
+            <SidebarFooterAccount
+              {...props}
+              onAccountClick={handleAccountClick} // Передаем обработчик клика
+            />
+          ),
         }}
       >
         {renderContent()}
