@@ -128,7 +128,7 @@ export default function CustomPaginationActionsTable() {
     <Box sx={{ p: 4 }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-          <TableHead>
+          <TableHead sx={{ backgroundColor: '#1e2022' }}>
             <TableRow>
               <TableCell>Тремболон</TableCell>
               <TableCell align="right">Колю в</TableCell>

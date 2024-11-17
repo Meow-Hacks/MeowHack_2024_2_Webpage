@@ -18,6 +18,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import CustomPaginationActionsTable from '../../components/TableData/TableData'
+import TableTest from '../../components/TableTest/TableTest'
 
 const NAVIGATION: Navigation = [
   {
@@ -53,6 +54,12 @@ const NAVIGATION: Navigation = [
         kind: 'page',
         segment: 'traffic',
         title: 'Загруженость',
+        icon: <TableChartIcon />,
+      },
+      {
+        kind: 'page',
+        segment: 'degree',
+        title: 'Успеваемость',
         icon: <TableChartIcon />,
       },
     ],
@@ -237,6 +244,22 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
         </Box>
       );
     }
+
+    if (activeSegment === 'degree') {
+      return (
+        <Box>
+          <Typography variant="h5">
+            Выбранная вкладка: {currentNav?.title || 'Неизвестно'}
+          </Typography>
+          <div style={{ height: 400, width: '100%' }}>
+            <TableTest />
+          </div>
+        </Box>
+      );
+    }
+
+
+    
 
     return (
       <Typography variant="body1">
