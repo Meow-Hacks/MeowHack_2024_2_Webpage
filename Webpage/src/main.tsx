@@ -5,7 +5,7 @@ import './index.css'
 import App from './App.tsx'
 
 import AuthPage from './pages/AuthPage/AuthPage';
-import DashboardPage from './pages/AdminPanelPage/AdminPanelPage.tsx';
+import AdminPanelPage from './pages/AdminPanelPage/AdminPanelPage.tsx';
 import NotFound from './components/NotFound/NotFound.tsx';
 import TestPage from './pages/TestPage/TestPage.tsx';
 
@@ -24,8 +24,8 @@ const router = createBrowserRouter(
           element: <AuthPage />
         },
         {
-          path: '/dashboard',
-          element: <DashboardPage />
+          path: '/adminpanel',
+          element: <AdminPanelPage />
         }
       ]
     },
