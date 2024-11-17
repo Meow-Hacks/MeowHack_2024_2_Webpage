@@ -142,8 +142,7 @@ function SidebarFooterAccount({ mini, onAccountClick }: SidebarFooterProps & { o
               sx: {
                 overflow: 'visible',
                 filter: (theme) =>
-                  `drop-shadow(0px 2px 8px ${
-                    theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.32)'
+                  `drop-shadow(0px 2px 8px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.32)'
                   })`,
                 mt: 1,
                 '&::before': {
@@ -195,7 +194,7 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
   }, [pathname]);
 
   const demoWindow = window !== undefined ? window() : undefined;
-  
+
   // const authentication = React.useMemo(() => {
   //   return {
   //     signIn: () => setSession(demoSession),

@@ -1,13 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
-import TableWidget from "../../components/TableWidget/TableWidget";
+import React from 'react';
+import { Container, Typography } from '@mui/material';
+import TableTest from '@/components/TableTest/TableTest';
+
 
 const TestPage: React.FC = () => {
-
     return (
-        <>
-            <TableWidget columns={[]} data={[]} rowKey={""} />
-        </>
+        <Container>
+            <Typography variant="h4" align="center" gutterBottom>
+                Список студентов
+            </Typography>
+            <TableTest />
+        </Container>
     );
 };
 

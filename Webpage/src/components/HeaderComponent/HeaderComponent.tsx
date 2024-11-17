@@ -1,7 +1,7 @@
 import React from 'react';
 import './HeaderComponent.scss';
 
-const HeaderComponent: React.FC = () => { 
+const HeaderComponent: React.FC = () => {
 
     return (
         <>
