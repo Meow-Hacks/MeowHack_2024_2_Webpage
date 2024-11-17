@@ -2,21 +2,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, SidebarFooterProps } from '@toolpad/core/DashboardLayout';
 import {
   Account,
   AccountPreview,
-  AccountPopoverFooter,
   SignOutButton,
   AccountPreviewProps,
 } from '@toolpad/core/Account';
@@ -24,8 +17,7 @@ import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
-// import { useDemoRouter } from '@toolpad/core/internal';
-import { DataGrid } from '@mui/x-data-grid';
+import CustomPaginationActionsTable from '../../components/TableData/TableData'
 
 const NAVIGATION: Navigation = [
   {
@@ -89,21 +81,6 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }: { pathname: string }) {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
-  );
-}
 function AccountSidebarPreview(props: AccountPreviewProps & { mini: boolean }) {
   const { handleClick, open, mini } = props;
   return (
@@ -118,79 +95,9 @@ function AccountSidebarPreview(props: AccountPreviewProps & { mini: boolean }) {
   );
 }
 
-const accounts = [
-  {
-    id: 1,
-    name: 'Админ 1',
-    email: 'admin@edu.mirea.ru',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr-oM39OqBCgUncMTs88Hk7fWuEPiihQaxmw&s',
-    projects: [
-      {
-        id: 3,
-        title: 'Project X',
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'sdgsdf',
-    email: 'dsfsfz@mdsfi.com',
-    color: '#8B4513', // Brown color
-    projects: [{ id: 4, title: 'Project A' }],
-  },
-];
-
 function SidebarFooterAccountPopover() {
   return (
-    <Stack direction="column">
-      <Typography variant="body2" mx={2} mt={1}>
-        Accounts
-      </Typography>
-      <MenuList>
-        {accounts.map((account) => (
-          <MenuItem
-            key={account.id}
-            component="button"
-            sx={{
-              justifyContent: 'flex-start',
-              width: '100%',
-              columnGap: 2,
-            }}
-          >
-            <ListItemIcon>
-              <Avatar
-                sx={{
-                  width: 32,
-                  height: 32,
-                  fontSize: '0.95rem',
-                  bgcolor: account.color,
-                }}
-                src={account.image ?? ''}
-                alt={account.name ?? ''}
-              >
-                {account.name[0]}
-              </Avatar>
-            </ListItemIcon>
-            <ListItemText
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                width: '100%',
-              }}
-              primary={account.name}
-              secondary={account.email}
-              primaryTypographyProps={{ variant: 'body2' }}
-              secondaryTypographyProps={{ variant: 'caption' }}
-            />
-          </MenuItem>
-        ))}
-      </MenuList>
-      <Divider />
-      <AccountPopoverFooter>
-        <SignOutButton />
-      </AccountPopoverFooter>
-    </Stack>
+    <SignOutButton />
   );
 }
 
@@ -244,10 +151,6 @@ function SidebarFooterAccount({ mini }: SidebarFooterProps) {
 }
 
 interface DemoProps {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
   window?: () => Window;
 }
 
@@ -282,19 +185,6 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
     };
   }, []);
 
-  const rows = [
-    { id: 1, user: 'Hanna Villarreal', age: 39, gender: 'Female' },
-    { id: 2, user: 'Hanna Villarreal', age: 39, gender: 'Female' },
-    { id: 3, user: 'Hanna Villarreal', age: 39, gender: 'Female' },
-  ];
-
-  const columns = [
-    { field: 'user', headerName: 'User', width: 150 },
-    { field: 'age', headerName: 'Age', width: 100 },
-    { field: 'gender', headerName: 'Gender Identity', width: 150 },
-  ];
-
-  // Получаем текущий активный путь
   const activeSegment = router.pathname.split('/').pop();
 
   const currentNav = NAVIGATION.find((nav) => nav.kind === 'page' && nav.segment === activeSegment);
@@ -307,7 +197,7 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
             Выбранная вкладка: {currentNav?.title || 'Неизвестно'}
           </Typography>
           <div style={{ height: 400, width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} checkboxSelection />
+            <CustomPaginationActionsTable />
           </div>
         </Box>
       );
