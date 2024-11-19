@@ -31,6 +31,20 @@ import HomeIcon from '@mui/icons-material/Home';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
+import EventIcon from '@mui/icons-material/Event';
+import BusinessIcon from '@mui/icons-material/Business';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import GroupIcon from '@mui/icons-material/Group';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import InsightsIcon from '@mui/icons-material/Insights';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import SpeedIcon from '@mui/icons-material/Speed';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
 
 const NAVIGATION: Navigation = [
   {
@@ -41,7 +55,7 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'dashboard',
     title: 'Расписание',
-    icon: <DashboardIcon />,
+    icon: <EventIcon />, 
   },
   {
     kind: 'divider',
@@ -54,31 +68,31 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'room-management',
     title: 'Управления помещениями',
-    icon: <MeetingRoomIcon />,
+    icon: <BusinessIcon />, 
     children: [
       {
         kind: 'page',
         segment: 'classrooms',
         title: 'Аудитории',
-        icon: <HomeIcon />, 
+        icon: <MeetingRoomIcon />, 
         children: [
           {
             kind: 'page',
             segment: 'state',
             title: 'Состояние',
-            icon: <AccessAlarmIcon />, 
+            icon: <AssignmentTurnedInIcon />, 
           },
           {
             kind: 'page',
             segment: 'monitoring',
             title: 'Мониторинг',
-            icon: <MonitorIcon />, 
+            icon: <VisibilityIcon />, 
           },
           {
             kind: 'page',
             segment: 'access',
             title: 'Доступы',
-            icon: <AccessAlarmIcon />, 
+            icon: <VpnKeyIcon />,
           },
         ],
       },
@@ -86,19 +100,19 @@ const NAVIGATION: Navigation = [
         kind: 'page',
         segment: 'premises',
         title: 'Помещения',
-        icon: <HomeIcon />,
+        icon: <ApartmentIcon />, 
         children: [
           {
             kind: 'page',
             segment: 'monitoring',
             title: 'Мониторинг',
-            icon: <MonitorIcon />, 
+            icon: <VisibilityIcon />, 
           },
           {
             kind: 'page',
             segment: 'access',
             title: 'Доступы',
-            icon: <AccessAlarmIcon />,
+            icon: <VpnKeyIcon />, 
           },
         ],
       },
@@ -108,26 +122,27 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'education-management',
     title: 'Управления обучением',
-    icon: <SchoolIcon />,
+    icon: <SchoolIcon />, 
     children: [
       {
         kind: 'page',
         segment: 'classrooms',
         title: 'Ученики',
-        icon: <HomeIcon />, 
+        // icon: <GroupIcon />,
+        icon: <AccessibleForwardIcon />,
         children: [
           {
             kind: 'page',
             segment: 'state',
             title: 'Список',
-            icon: <AccessibleForwardIcon />, 
+            icon: <FormatListBulletedIcon />, 
           },
           {
             kind: 'page',
             segment: 'monitoring',
             title: 'Успеваемость',
-            icon: <MonitorIcon />, 
-          }
+            icon: <BarChartIcon />, 
+          },
         ],
       },
     ],
@@ -136,25 +151,25 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'reports',
     title: 'Статистика',
-    icon: <BarChartIcon />,
+    icon: <InsightsIcon />, 
     children: [
       {
         kind: 'page',
         segment: 'sales',
         title: 'Посещаемость',
-        icon: <TableChartIcon />,
+        icon: <AssignmentIndIcon />, 
       },
       {
         kind: 'page',
         segment: 'traffic',
         title: 'Загруженность',
-        icon: <TableChartIcon />,
+        icon: <SpeedIcon />, 
       },
       {
         kind: 'page',
         segment: 'degree',
         title: 'Успеваемость',
-        icon: <TableChartIcon />,
+        icon: <EmojiEventsIcon />, 
       },
     ],
   },
@@ -162,9 +177,10 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'integrations',
     title: 'Помощь',
-    icon: <LayersIcon />,
+    icon: <HelpOutlineIcon />,
   },
 ];
+
 
 const demoTheme = createTheme({
   cssVariables: {
