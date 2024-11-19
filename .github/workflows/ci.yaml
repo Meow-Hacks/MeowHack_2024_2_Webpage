@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - Webpage_dev
+      - Webpage_prod
 jobs:
   ci:
     runs-on: ubuntu-latest
