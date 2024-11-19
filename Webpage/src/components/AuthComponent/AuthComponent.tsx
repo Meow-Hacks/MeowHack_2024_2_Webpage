@@ -51,7 +51,6 @@ const AuthComponent: React.FC = () => {
             <div className="background-circle circle-blue"></div>
             <div className="background-circle circle-orange"></div>
 
-            {/* Компонент Snackbar для отображения ошибки */}
             <Snackbar
                 open={open}
                 autoHideDuration={6000}
