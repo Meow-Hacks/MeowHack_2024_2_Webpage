@@ -16,9 +16,14 @@ import {
 import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import Button from '@mui/material/Button';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import LayersIcon from '@mui/icons-material/Layers';
 import CustomPaginationActionsTable from '../../components/TableData/TableData'
 import TableTest from '../../components/TableTest/TableTest'
+import IconButton from '@mui/material/IconButton';
+import LoginIcon from '@mui/icons-material/Login';
+import Tooltip from '@mui/material/Tooltip';
 
 const NAVIGATION: Navigation = [
   {
@@ -120,58 +125,61 @@ function SidebarFooterAccountPopover() {
 // TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
 // TODO: вместо трех точек в плашке админа сделать кнопку выхода из аккаунта!!!!!!!!
 
-function SidebarFooterAccount({ mini, onAccountClick }: SidebarFooterProps & { onAccountClick: () => void }) {
-  // const PreviewComponent = React.useMemo(() => createPreviewComponent(mini), [mini]);
-
+function SidebarFooterAccount({
+  onSignOut,
+  onProfileClick,
+  onSignIn,
+  session,
+}: SidebarFooterProps & {
+  onSignOut: () => void;
+  onProfileClick: () => void;
+  onSignIn: () => void;
+  session: Session | null;
+}) {
   return (
-    <Account
-      slots={{
-        preview: (props) => (
-          <Stack
-            onClick={onAccountClick} // Добавляем обработчик
-            sx={{
-              cursor: 'pointer', // Указываем, что элемент кликабельный
-            }}
-          >
-            <AccountSidebarPreview {...props} mini={mini} />
-          </Stack>
-        ),
-        popoverContent: SidebarFooterAccountPopover,
-      }}
-      slotProps={{
-        popover: {
-          transformOrigin: { horizontal: 'left', vertical: 'bottom' },
-          anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-          disableAutoFocus: true,
-          slotProps: {
-            paper: {
-              elevation: 0,
-              sx: {
-                overflow: 'visible',
-                filter: (theme) =>
-                  `drop-shadow(0px 2px 8px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.32)'
-                  })`,
-                mt: 1,
-                '&::before': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  bottom: 10,
-                  left: 0,
-                  width: 10,
-                  height: 10,
-                  bgcolor: 'background.paper',
-                  transform: 'translate(-50%, -50%) rotate(45deg)',
-                  zIndex: 0,
+    <Box p={2}>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        {session ? (
+          <>
+            {/* User Profile Display */}
+            <Box onClick={onProfileClick} sx={{ cursor: 'pointer' }}>
+              <AccountPreview variant="expanded" />
+            </Box>
+            {/* Sign-Out Icon */}
+            <Tooltip title="Выйти">
+              <IconButton onClick={onSignOut} color="error" aria-label="Выйти">
+                <PowerSettingsNewIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : (
+          /* Sign-In Button */
+          <Tooltip title="Войти">
+            <Button
+              variant="text"
+              startIcon={<LoginIcon />}
+              onClick={onSignIn}
+              color="primary"
+              aria-label="Войти"
+              sx={{
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)', // Optional: Hover effect
                 },
-              },
-            },
-          },
-        },
-      }}
-    />
+              }}
+            >
+              Войти
+            </Button>
+          </Tooltip>
+        )}
+      </Stack>
+    </Box>
   );
 }
+
+
+
 
 interface DemoProps {
   window?: () => Window;
@@ -188,10 +196,12 @@ const demoSession: Session = {
 export default function DashboardLayoutAccountSidebar(props: DemoProps) {
   const { window } = props;
 
+  // State Management
   const [pathname, setPathname] = React.useState('/adminpanel');
   const [session, setSession] = React.useState<Session | null>(demoSession);
   const [showAdminInfo, setShowAdminInfo] = React.useState(false);
 
+  // Router Setup
   const router = React.useMemo<Router>(() => {
     return {
       pathname,
@@ -202,25 +212,33 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
 
   const demoWindow = window !== undefined ? window() : undefined;
 
-  // const authentication = React.useMemo(() => {
-  //   return {
-  //     signIn: () => setSession(demoSession),
-  //     signOut: () => setSession(null),
-  //   };
-  // }, []);
+  // Handlers
+  const handleSignOut = () => {
+    setSession(null);
+  };
 
-  const handleSignOut = () => setSession(null);
+  const handleSignIn = () => {
+    setSession(demoSession);
+  };
 
   const activeSegment = router.pathname.split('/').pop();
 
-  const handleAccountClick = () => setShowAdminInfo(!showAdminInfo);
+  const handleProfileClick = () => {
+    if (session) {
+      setShowAdminInfo(!showAdminInfo);
+    }
+  };
 
-  const currentNav = NAVIGATION.find((nav) => nav.kind === 'page' && nav.segment === activeSegment);
+  const currentNav = NAVIGATION.find(
+    (nav) => nav.kind === 'page' && nav.segment === activeSegment
+  );
 
+  // Reset states on pathname change
   React.useEffect(() => {
     setShowAdminInfo(false);
   }, [pathname]);
 
+  // Content Rendering
   const renderContent = () => {
     if (showAdminInfo && session?.user) {
       return (
@@ -258,9 +276,6 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
       );
     }
 
-
-    
-
     return (
       <Typography variant="body1">
         {`Текущая страница: ${currentNav?.title || 'Неизвестно'}`}
@@ -272,14 +287,16 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
     <AppProvider
       navigation={NAVIGATION}
       branding={{
-        logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
+        logo: (
+          <img src="https://mui.com/static/logo.png" alt="MUI logo" />
+        ),
         title: 'Админ панель',
       }}
       router={router}
       theme={demoTheme}
       window={demoWindow}
       authentication={{
-        signIn: () => setSession(demoSession),
+        signIn: handleSignIn,
         signOut: handleSignOut,
       }}
       session={session}
@@ -287,10 +304,12 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
       <DashboardLayout
         slots={{
           toolbarAccount: () => null,
-          sidebarFooter: (props) => (
+          sidebarFooter: () => (
             <SidebarFooterAccount
-              {...props}
-              onAccountClick={handleAccountClick} // Передаем обработчик клика
+              onSignOut={handleSignOut}
+              onProfileClick={handleProfileClick}
+              onSignIn={handleSignIn}
+              session={session}
             />
           ),
         }}
@@ -300,3 +319,5 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
     </AppProvider>
   );
 }
+
+
