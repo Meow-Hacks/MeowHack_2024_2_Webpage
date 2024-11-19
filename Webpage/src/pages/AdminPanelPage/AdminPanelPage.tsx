@@ -25,6 +25,12 @@ import IconButton from '@mui/material/IconButton';
 import LoginIcon from '@mui/icons-material/Login';
 import Tooltip from '@mui/material/Tooltip';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import SchoolIcon from '@mui/icons-material/School';
+import HomeIcon from '@mui/icons-material/Home';
+import MonitorIcon from '@mui/icons-material/Monitor';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 
 const NAVIGATION: Navigation = [
   {
@@ -34,7 +40,7 @@ const NAVIGATION: Navigation = [
   {
     kind: 'page',
     segment: 'dashboard',
-    title: 'Рассписание',
+    title: 'Расписание',
     icon: <DashboardIcon />,
   },
   {
@@ -43,6 +49,88 @@ const NAVIGATION: Navigation = [
   {
     kind: 'header',
     title: 'Сведения',
+  },
+  {
+    kind: 'page',
+    segment: 'room-management',
+    title: 'Управления помещениями',
+    icon: <MeetingRoomIcon />,
+    children: [
+      {
+        kind: 'page',
+        segment: 'classrooms',
+        title: 'Аудитории',
+        icon: <HomeIcon />, 
+        children: [
+          {
+            kind: 'page',
+            segment: 'state',
+            title: 'Состояние',
+            icon: <AccessAlarmIcon />, 
+          },
+          {
+            kind: 'page',
+            segment: 'monitoring',
+            title: 'Мониторинг',
+            icon: <MonitorIcon />, 
+          },
+          {
+            kind: 'page',
+            segment: 'access',
+            title: 'Доступы',
+            icon: <AccessAlarmIcon />, 
+          },
+        ],
+      },
+      {
+        kind: 'page',
+        segment: 'premises',
+        title: 'Помещения',
+        icon: <HomeIcon />,
+        children: [
+          {
+            kind: 'page',
+            segment: 'monitoring',
+            title: 'Мониторинг',
+            icon: <MonitorIcon />, 
+          },
+          {
+            kind: 'page',
+            segment: 'access',
+            title: 'Доступы',
+            icon: <AccessAlarmIcon />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'page',
+    segment: 'education-management',
+    title: 'Управления обучением',
+    icon: <SchoolIcon />,
+    children: [
+      {
+        kind: 'page',
+        segment: 'classrooms',
+        title: 'Ученики',
+        icon: <HomeIcon />, 
+        children: [
+          {
+            kind: 'page',
+            segment: 'state',
+            title: 'Список',
+            icon: <AccessibleForwardIcon />, 
+          },
+          {
+            kind: 'page',
+            segment: 'monitoring',
+            title: 'Успеваемость',
+            icon: <MonitorIcon />, 
+          }
+        ],
+      },
+    ],
   },
   {
     kind: 'page',
@@ -59,7 +147,7 @@ const NAVIGATION: Navigation = [
       {
         kind: 'page',
         segment: 'traffic',
-        title: 'Загруженость',
+        title: 'Загруженность',
         icon: <TableChartIcon />,
       },
       {
