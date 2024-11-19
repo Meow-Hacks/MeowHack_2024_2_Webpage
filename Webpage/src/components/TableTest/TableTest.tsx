@@ -145,9 +145,9 @@ export default function TableTest() {
     };
 
     return (
-        <>
-            <TableContainer component={Paper} sx={{ margin: '10px' }}>
-                <Table sx={{ minWidth: 700 }} aria-label="custom pagination table">
+        <Box sx={{ p: 4 }}>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                     <TableHead>
                         <TableRow>
                             <TableCell>ФИО</TableCell>
@@ -212,6 +212,6 @@ export default function TableTest() {
                     student={selectedStudent}
                 />
             )}
-        </>
+        </Box>
     );
 }

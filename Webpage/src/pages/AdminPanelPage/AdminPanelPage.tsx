@@ -24,6 +24,7 @@ import TableTest from '../../components/TableTest/TableTest'
 import IconButton from '@mui/material/IconButton';
 import LoginIcon from '@mui/icons-material/Login';
 import Tooltip from '@mui/material/Tooltip';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const NAVIGATION: Navigation = [
   {
@@ -147,8 +148,8 @@ function SidebarFooterAccount({
             </Box>
             {/* Sign-Out Icon */}
             <Tooltip title="Выйти">
-              <IconButton onClick={onSignOut} color="error" aria-label="Выйти">
-                <PowerSettingsNewIcon />
+              <IconButton onClick={onSignOut} color="primary"  aria-label="Выйти">
+                <ExitToAppIcon />
               </IconButton>
             </Tooltip>
           </>

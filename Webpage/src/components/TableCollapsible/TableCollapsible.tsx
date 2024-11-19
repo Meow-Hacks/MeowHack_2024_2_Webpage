@@ -41,7 +41,7 @@ function Row(props: { row: ReturnType<typeof createRow> }) {
     return (
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell>
+                <TableCell sx={{ padding: '8px 16px' }}>
                     <IconButton
                         aria-label="expand row"
                         size="small"
@@ -50,12 +50,12 @@ function Row(props: { row: ReturnType<typeof createRow> }) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" sx={{ padding: '8px 16px' }}>
                     {row.subject}
                 </TableCell>
-                <TableCell align="right">{row.teacher}</TableCell>
-                <TableCell align="right">{row.percentile}%</TableCell>
-                <TableCell align="right">{row.gpa}</TableCell>
+                <TableCell align="right" sx={{ padding: '8px 16px' }}>{row.teacher}</TableCell>
+                <TableCell align="right" sx={{ padding: '8px 16px' }}>{row.percentile}%</TableCell>
+                <TableCell align="right" sx={{ padding: '8px 16px' }}>{row.gpa}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
@@ -67,19 +67,19 @@ function Row(props: { row: ReturnType<typeof createRow> }) {
                             <Table size="small" aria-label="performance">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Дисциплина</TableCell>
-                                        <TableCell>Оценка</TableCell>
-                                        <TableCell>Преподаватель</TableCell>
+                                        <TableCell sx={{ padding: '8px 16px' }}>Дисциплина</TableCell>
+                                        <TableCell sx={{ padding: '8px 16px' }}>Оценка</TableCell>
+                                        <TableCell sx={{ padding: '8px 16px' }}>Преподаватель</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {row.performance.map((perfRow, index) => (
                                         <TableRow key={index}>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="th" scope="row" sx={{ padding: '8px 16px' }}>
                                                 {perfRow.discipline}
                                             </TableCell>
-                                            <TableCell>{perfRow.grade}</TableCell>
-                                            <TableCell>{perfRow.teacher}</TableCell>
+                                            <TableCell sx={{ padding: '8px 16px' }}>{perfRow.grade}</TableCell>
+                                            <TableCell sx={{ padding: '8px 16px' }}>{perfRow.teacher}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -94,23 +94,25 @@ function Row(props: { row: ReturnType<typeof createRow> }) {
 
 export default function CollapsibleTable() {
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell>Предмет</TableCell>
-                        <TableCell align="right">Преподаватель</TableCell>
-                        <TableCell align="right">Перцентиль</TableCell>
-                        <TableCell align="right">GPA</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row, index) => (
-                        <Row key={index} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Box sx={{ p: 4 }}>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 500 }} aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={{ padding: '8px 16px' }} />
+                            <TableCell sx={{ padding: '8px 16px' }}>Предмет</TableCell>
+                            <TableCell align="right" sx={{ padding: '8px 16px' }}>Преподаватель</TableCell>
+                            <TableCell align="right" sx={{ padding: '8px 16px' }}>Перцентиль</TableCell>
+                            <TableCell align="right" sx={{ padding: '8px 16px' }}>GPA</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row, index) => (
+                            <Row key={index} row={row} />
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
     );
 }
