@@ -1,0 +1,41 @@
+name: Build && Deploy
+on:
+  push:
+    branches:
+      - Webpage_dev
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse HEAD revision
+        run: echo "COMMIT_HASH=$(git rev-parse HEAD | head -c 8)" >> "$GITHUB_ENV"
+
+      - name: Build frontend
+        run: docker build -f Webpage/Dockerfile -t "mh_webpage:$COMMIT_HASH" Webpage
+      - name: Tag frontend
+        run: >
+          docker image tag "mh_webpage:$COMMIT_HASH"
+          "ghcr.io/meow-hacks/mh_webpage:latest"
+
+      - name: Login into registry
+        run: docker login -u meow-hacks -p ${{ secrets.MEOWHACKS_ACCESS_TOKEN_CLASSIC }} ghcr.io
+
+      - name: Push frontend image
+        run: docker push ghcr.io/meow-hacks/mh_webpage:latest
+
+      - name: Delete old frontend images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: mh_webpage
+          package-type: container
+          min-versions-to-keep: 1
+          token: ${{ secrets.MEOWHACKS_ACCESS_TOKEN_CLASSIC }}
+
+      - name: Deploy containers
+        run: |
+          echo "${{ secrets.DEPLOY_CERT }}" > deploy.cert
+          chmod 600 deploy.cert
+          ssh -o "StrictHostKeyChecking no" -i deploy.cert "ci@${{ vars.DEPLOY_HOST }}" "cd ~/mh_webpage && ./deploy.sh"
