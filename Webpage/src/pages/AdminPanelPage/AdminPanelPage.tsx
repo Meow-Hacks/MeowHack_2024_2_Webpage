@@ -96,11 +96,29 @@ const NAVIGATION: Navigation = [
   { kind: 'page', segment: 'integrations', title: 'Помощь', icon: <HelpOutlineIcon /> },
 ];
 
-const demoTheme = createTheme({
+const customTheme = createTheme({
   cssVariables: {
     colorSchemeSelector: 'data-toolpad-color-scheme',
   },
-  colorSchemes: { light: true, dark: true },
+  colorSchemes: {
+    light: {
+      palette: {
+        background: {
+          default: '#2A4364',
+          paper: '#112E4D',
+        },
+        text: {
+          primary: '#FFFFFF', // White text for primary
+          secondary: '#FFFFFF', // White text for secondary
+        },
+        // Add icon color settings
+        action: {
+          active: '#FFFFFF', // White color for active icons
+        },
+      },
+    },
+    dark: true,
+  },
   breakpoints: {
     values: {
       xs: 0,
@@ -236,7 +254,7 @@ export default function DashboardLayoutAccountSidebar() {
         title: 'Админ панель',
       }}
       router={router}
-      theme={demoTheme}
+      theme={customTheme}
       authentication={{
         signIn: handleSignIn,
         signOut: handleSignOut,
