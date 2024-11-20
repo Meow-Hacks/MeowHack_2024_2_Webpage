@@ -130,7 +130,7 @@ export default function CustomPaginationActionsTable() {
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
-              <TableCell>ФИО</TableCell>
+              <TableCell>Аудитория</TableCell>
               <TableCell align="right">Описание</TableCell>
               <TableCell align="right">Статус</TableCell>
             </TableRow>
