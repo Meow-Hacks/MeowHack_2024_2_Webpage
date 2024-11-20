@@ -254,12 +254,84 @@ export default function DashboardLayoutAccountSidebar() {
     }
 
     switch (activeSegment) {
+      case 'state1':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Пу пу пууу</h3>
+            </div>
+          </Box>
+        );
+        case 'monitoring1':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Заварю ка</h3>
+            </div>
+          </Box>
+        );
+        case 'access1':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>Кофейку</h3>
+            </div>
+          </Box>
+        );
+        case 'monitoring2':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>На</h3>
+            </div>
+          </Box>
+        );
+        case 'access2':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>Папей</h3>
+            </div>
+          </Box>
+        );
+        case 'state3':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Галочка, ты</h3>
+            </div>
+          </Box>
+        );
+        case 'monitoring3':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Щас умрешь</h3>
+            </div>
+          </Box>
+        );
       case 'sales':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <CustomPaginationActionsTable />
+            </div>
+          </Box>
+        );
+        case 'traffic':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+            <h3>Абоба</h3>
             </div>
           </Box>
         );
@@ -272,12 +344,13 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'degree':
+        case 'integrations':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <TableTest />
+            <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
+            <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
             </div>
           </Box>
         );
