@@ -48,9 +48,9 @@ const NAVIGATION: Navigation = [
         title: 'Аудитории',
         icon: <MeetingRoomIcon />, 
         children: [
-          { kind: 'page', segment: 'state', title: 'Состояние', icon: <AssignmentTurnedInIcon /> },
-          { kind: 'page', segment: 'monitoring', title: 'Мониторинг', icon: <VisibilityIcon /> },
-          { kind: 'page', segment: 'access', title: 'Доступы', icon: <VpnKeyIcon /> },
+          { kind: 'page', segment: 'state1', title: 'Состояние', icon: <AssignmentTurnedInIcon /> },
+          { kind: 'page', segment: 'monitoring1', title: 'Мониторинг', icon: <VisibilityIcon /> },
+          { kind: 'page', segment: 'access1', title: 'Доступы', icon: <VpnKeyIcon /> },
         ],
       },
       {
@@ -59,8 +59,8 @@ const NAVIGATION: Navigation = [
         title: 'Помещения',
         icon: <ApartmentIcon />, 
         children: [
-          { kind: 'page', segment: 'monitoring', title: 'Мониторинг', icon: <VisibilityIcon /> },
-          { kind: 'page', segment: 'access', title: 'Доступы', icon: <VpnKeyIcon /> },
+          { kind: 'page', segment: 'monitoring2', title: 'Мониторинг', icon: <VisibilityIcon /> },
+          { kind: 'page', segment: 'access2', title: 'Доступы', icon: <VpnKeyIcon /> },
         ],
       },
     ],
@@ -76,8 +76,8 @@ const NAVIGATION: Navigation = [
         segment: 'classrooms',
         title: 'Ученики',
         children: [
-          { kind: 'page', segment: 'state', title: 'Список', icon: <FormatListBulletedIcon /> },
-          { kind: 'page', segment: 'monitoring', title: 'Успеваемость', icon: <BarChartIcon /> },
+          { kind: 'page', segment: 'state3', title: 'Список', icon: <FormatListBulletedIcon /> },
+          { kind: 'page', segment: 'monitoring3', title: 'Успеваемость', icon: <BarChartIcon /> },
         ],
       },
     ],
@@ -111,10 +111,12 @@ const customTheme = createTheme({
           primary: '#FFFFFF', // White text for primary
           secondary: '#FFFFFF', // White text for secondary
         },
-        // Add icon color settings
         action: {
           active: '#FFFFFF', // White color for active icons
         },
+        common: {
+          white: '#000000',
+        }
       },
     },
     dark: true,
@@ -183,6 +185,18 @@ const demoSession: Session = {
   },
 };
 
+interface NavigationItem {
+  kind: 'header' | 'page' | 'divider';
+  title: string;
+  segment?: string;
+  icon?: React.ReactNode;
+  children?: NavigationItem[];
+}
+
+type Navigation = NavigationItem[];
+
+
+
 export default function DashboardLayoutAccountSidebar() {
   // State Management
   const [pathname, setPathname] = React.useState('/adminpanel');
@@ -204,7 +218,22 @@ export default function DashboardLayoutAccountSidebar() {
   const handleProfileClick = () => setShowAdminInfo((prev) => !prev);
 
   const activeSegment = router.pathname.split('/').pop();
-  const currentNav = NAVIGATION.find((nav) => nav.kind === 'page' && nav.segment === activeSegment);
+  
+  function findCurrentNav(navItems: Navigation, segment: string): NavigationItem | null {
+    for (const item of navItems) {
+      if (item.segment === segment) {
+        return item; // Нашли элемент с точным совпадением сегмента
+      }
+      if (item.children) {
+        const found = findCurrentNav(item.children, segment);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null; // Если ничего не нашли
+  }
+
 
   React.useEffect(() => {
     setShowAdminInfo(false);
@@ -212,6 +241,8 @@ export default function DashboardLayoutAccountSidebar() {
 
   // Content Rendering
   const renderContent = () => {
+    const currentNav = activeSegment ? findCurrentNav(NAVIGATION, activeSegment) : null;
+
     if (showAdminInfo && session?.user) {
       return (
         <Box>
@@ -233,6 +264,15 @@ export default function DashboardLayoutAccountSidebar() {
           </Box>
         );
       case 'degree':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <TableTest />
+            </div>
+          </Box>
+        );
+        case 'degree':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
