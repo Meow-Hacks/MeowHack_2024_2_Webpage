@@ -40,13 +40,13 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'room-management',
     title: 'Управление помещениями',
-    icon: <BusinessIcon />, 
+    icon: <BusinessIcon />,
     children: [
       {
         kind: 'page',
         segment: 'classrooms',
         title: 'Аудитории',
-        icon: <MeetingRoomIcon />, 
+        icon: <MeetingRoomIcon />,
         children: [
           { kind: 'page', segment: 'state1', title: 'Состояние', icon: <AssignmentTurnedInIcon /> },
           { kind: 'page', segment: 'monitoring1', title: 'Мониторинг', icon: <VisibilityIcon /> },
@@ -57,7 +57,7 @@ const NAVIGATION: Navigation = [
         kind: 'page',
         segment: 'premises',
         title: 'Помещения',
-        icon: <ApartmentIcon />, 
+        icon: <ApartmentIcon />,
         children: [
           { kind: 'page', segment: 'monitoring2', title: 'Мониторинг', icon: <VisibilityIcon /> },
           { kind: 'page', segment: 'access2', title: 'Доступы', icon: <VpnKeyIcon /> },
@@ -69,7 +69,7 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'education-management',
     title: 'Управление обучением',
-    icon: <AccessibleForwardIcon />, 
+    icon: <AccessibleForwardIcon />,
     children: [
       {
         kind: 'page',
@@ -86,7 +86,7 @@ const NAVIGATION: Navigation = [
     kind: 'page',
     segment: 'reports',
     title: 'Статистика',
-    icon: <InsightsIcon />, 
+    icon: <InsightsIcon />,
     children: [
       { kind: 'page', segment: 'sales', title: 'Посещаемость', icon: <AssignmentIndIcon /> },
       { kind: 'page', segment: 'traffic', title: 'Загруженность', icon: <SpeedIcon /> },
@@ -132,45 +132,81 @@ const customTheme = createTheme({
   },
 });
 
-function SidebarFooterAccount({ onSignOut, onProfileClick, onSignIn, session }: SidebarFooterProps & {
+function SidebarFooterAccount({
+  onSignOut,
+  onProfileClick,
+  onSignIn,
+  session,
+  isSidebarCollapsed,
+}: SidebarFooterProps & {
   onSignOut: () => void;
   onProfileClick: () => void;
-  onSignIn: () => void;
+  onSignIn: () => void;                                  ///////////////////////////////////
   session: Session | null;
+  isSidebarCollapsed: boolean;
 }) {
   return (
-    <Box p={2} sx={{ position: 'sticky', bottom: 0, width: '100%', backgroundColor: 'background.paper', zIndex: 1, boxShadow: 1 }}>
-      <Stack direction="row" alignItems="center" spacing={1}>
+    <Box
+      p={2}
+      sx={{
+        position: 'sticky',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: 'background.paper',
+        zIndex: 1,
+        boxShadow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={isSidebarCollapsed ? 0 : 1}
+      >
         {session ? (
           <>
-            <Box onClick={onProfileClick} sx={{ cursor: 'pointer' }}>
-              <AccountPreview variant="expanded" />
-            </Box>
-            <Tooltip title="Выйти">
-              <IconButton onClick={onSignOut} color="primary" aria-label="Выйти">
-                <ExitToAppIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : (
-          <Tooltip title="Войти">
-            <Button
-              variant="text"
-              startIcon={<LoginIcon />}
-              onClick={onSignIn}
-              color="primary"
-              aria-label="Войти"
+            <Box
+              onClick={onProfileClick}
               sx={{
-                justifyContent: 'flex-start',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                },
+                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'center'
               }}
             >
-              Войти
-            </Button>
-          </Tooltip>
+              <AccountPreview variant={isSidebarCollapsed ? "condensed" : "expanded"} />
+            </Box>
+            {!isSidebarCollapsed && (
+              <Tooltip title="Выйти">
+                <IconButton onClick={onSignOut} color="primary" aria-label="Выйти">
+                  <ExitToAppIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </>
+        ) : (
+          !isSidebarCollapsed && (
+            <Tooltip title="Войти">
+              <Button
+                variant="text"
+                startIcon={<LoginIcon />}
+                onClick={onSignIn}
+                color="primary"
+                aria-label="Войти"
+                sx={{
+                  justifyContent: 'center',
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                }}
+              >
+                Войти
+              </Button>
+            </Tooltip>
+          )
         )}
       </Stack>
     </Box>
@@ -195,13 +231,29 @@ interface NavigationItem {
 
 type Navigation = NavigationItem[];
 
-
-
 export default function DashboardLayoutAccountSidebar() {
   // State Management
   const [pathname, setPathname] = React.useState('/adminpanel');
   const [session, setSession] = React.useState<Session | null>(demoSession);
   const [showAdminInfo, setShowAdminInfo] = React.useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleIconClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.getAttribute('data-testid') === 'MenuIcon') {                 ///////////////////////////////////
+        console.log('Клик по MenuOpenIcon');
+        setIsSidebarCollapsed(false);
+      } else if (target.getAttribute('data-testid') === 'MenuOpenIcon') {
+        console.log('Клик по MenuIcon');
+        setIsSidebarCollapsed(true);
+      }
+    };
+    document.addEventListener('click', handleIconClick);
+    return () => {
+      document.removeEventListener('click', handleIconClick);
+    };
+  }, []);
 
   // Router Setup
   const router = React.useMemo<Router>(() => {
@@ -218,7 +270,7 @@ export default function DashboardLayoutAccountSidebar() {
   const handleProfileClick = () => setShowAdminInfo((prev) => !prev);
 
   const activeSegment = router.pathname.split('/').pop();
-  
+
   function findCurrentNav(navItems: Navigation, segment: string): NavigationItem | null {
     for (const item of navItems) {
       if (item.segment === segment) {
@@ -233,7 +285,6 @@ export default function DashboardLayoutAccountSidebar() {
     }
     return null; // Если ничего не нашли
   }
-
 
   React.useEffect(() => {
     setShowAdminInfo(false);
@@ -263,94 +314,13 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'monitoring1':
+      case 'integrations':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Заварю ка</h3>
-            </div>
-          </Box>
-        );
-        case 'access1':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
-              <h3>Кофейку</h3>
-            </div>
-          </Box>
-        );
-        case 'monitoring2':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
-              <h3>На</h3>
-            </div>
-          </Box>
-        );
-        case 'access2':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
-              <h3>Папей</h3>
-            </div>
-          </Box>
-        );
-        case 'state3':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-              <h3>Галочка, ты</h3>
-            </div>
-          </Box>
-        );
-        case 'monitoring3':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-              <h3>Щас умрешь</h3>
-            </div>
-          </Box>
-        );
-      case 'sales':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-              <CustomPaginationActionsTable />
-            </div>
-          </Box>
-        );
-        case 'traffic':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-            <h3>Абоба</h3>
-            </div>
-          </Box>
-        );
-      case 'degree':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-              <TableTest />
-            </div>
-          </Box>
-        );
-        case 'integrations':
-        return (
-          <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%' }}>
-            <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
-            <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
+              <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
+              <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
             </div>
           </Box>
         );
@@ -369,7 +339,7 @@ export default function DashboardLayoutAccountSidebar() {
       router={router}
       theme={customTheme}
       authentication={{
-        signIn: handleSignIn,
+        signIn: handleSignIn,                                            //////////////////////////////////
         signOut: handleSignOut,
       }}
       session={session}
@@ -380,9 +350,10 @@ export default function DashboardLayoutAccountSidebar() {
           sidebarFooter: () => (
             <SidebarFooterAccount
               onSignOut={handleSignOut}
-              onProfileClick={handleProfileClick}
+              onProfileClick={handleProfileClick}                            
               onSignIn={handleSignIn}
               session={session}
+              isSidebarCollapsed={isSidebarCollapsed}
             />
           ),
         }}
