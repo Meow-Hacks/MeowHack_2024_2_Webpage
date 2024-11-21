@@ -30,6 +30,7 @@ import { AccountPreview, SignOutButton } from '@toolpad/core/Account';
 import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import CustomPaginationActionsTable from '../../components/TableData/TableData';
 import TableTest from '../../components/TableTest/TableTest';
+import { UniversalTable } from '@/components/UniversalTable/Table';
 
 const NAVIGATION: Navigation = [
   { kind: 'header', title: 'Основное' },
@@ -221,6 +222,18 @@ const demoSession: Session = {
   },
 };
 
+const columns = [
+  { label: 'Аудитория', key: 'name' },
+  { label: 'Описание', key: 'hours' },
+  { label: 'Статус', key: 'status' },
+];
+
+const data = [
+  { name: 'А-10', hours: 12, status: 'занят' },
+  { name: 'А-11', hours: 24, status: 'свободен' },
+  { name: 'А-12', hours: 32, status: 'зарезервирован' },
+];
+
 interface NavigationItem {
   kind: 'header' | 'page' | 'divider';
   title: string;
@@ -305,25 +318,124 @@ export default function DashboardLayoutAccountSidebar() {
     }
 
     switch (activeSegment) {
+      case 'dashboard':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Пу пу пууу</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
       case 'state1':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Пу пу пууу</h3>
+              <UniversalTable columns={columns} data={data} />;
             </div>
           </Box>
         );
-      case 'integrations':
+        case 'monitoring1':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
-              <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
+              <h3>Заварю ка</h3>
+              <UniversalTable columns={columns} data={data} />;
             </div>
           </Box>
         );
+        case 'access1':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>Кофейку</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
+        case 'monitoring2':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>На</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
+        case 'access2':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%'}}>
+              <h3>Папей</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
+        case 'state3':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Галочка, ты</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
+        case 'monitoring3':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Щас умрешь</h3>
+              <UniversalTable columns={columns} data={data} />;
+            </div>
+          </Box>
+        );
+        case 'sales':
+          return (
+            <Box>
+              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+              <div style={{ height: 400, width: '100%' }}>
+                <CustomPaginationActionsTable />
+              </div>
+            </Box>
+          );
+          case 'traffic':
+          return (
+            <Box>
+              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+              <div style={{ height: 400, width: '100%' }}>
+              <h3>Абоба</h3>
+              <UniversalTable columns={columns} data={data} />;
+              </div>
+            </Box>
+          );
+        case 'degree':
+          return (
+            <Box>
+              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+              <div style={{ height: 400, width: '100%' }}>
+                <TableTest />
+              </div>
+            </Box>
+          );
+          case 'integrations':
+          return (
+            <Box>
+              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+              <div style={{ height: 400, width: '100%' }}>
+              <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
+              <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
+              </div>
+            </Box>
+          );
       default:
         return <Typography variant="body1">Текущая страница: {currentNav?.title || 'Неизвестно'}</Typography>;
     }
