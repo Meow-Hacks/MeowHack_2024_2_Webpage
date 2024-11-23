@@ -28,7 +28,7 @@ interface TablePaginationActionsProps {
 
 interface UniversalTableProps {
   columns: { label: string; key: string }[]; // Определение колонок
-  data: any[]; // Данные таблицы
+  data: unknown[]; // Данные таблицы
   rowsPerPageOptions?: number[]; // Опции для выбора количества строк на странице
 }
 

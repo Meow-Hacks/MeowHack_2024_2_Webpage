@@ -2,33 +2,44 @@ import React, { useState } from 'react';
 import './AuthComponent.scss';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import { useAuth } from '../../api/useAuth'; 
+import { useNavigate } from 'react-router-dom';
 
 const AuthComponent: React.FC = () => {
-    const [username, setUsername] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
+    const { login } = useAuth(); 
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
-        if (username.trim() === '' || password.trim() === '') {
-          setError('Пожалуйста, заполните все поля');
-          setOpen(true);
-          console.log('Ошибка: пустые поля');
+    const handleLogin = async () => {
+        if (identifier.trim() === '' || password.trim() === '') {
+            setError('Пожалуйста, заполните все поля');
+            setOpen(true);
+            console.log('Ошибка: пустые поля');
         } else {
-          setError(null);
-          console.log('Логин:', username, 'Пароль:', password);
+            setError(null);
+            try {
+                await login({ phone: identifier, mail: identifier, password });
+                navigate('/adminpanel'); 
+            } catch (err) {
+                setError('Ошибка авторизации');
+                setOpen(true);
+                console.error('Ошибка авторизации:', err);
+            }
         }
-      };
-    
-      const handleClose = (
+    };
+
+    const handleClose = (
         event?: React.SyntheticEvent | Event,
         reason?: string
-      ) => {
+    ) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
         setOpen(false);
-      };
+    };
 
     return (
         <>
@@ -36,9 +47,9 @@ const AuthComponent: React.FC = () => {
                 <h2>Авторизация</h2>
                 <input
                     type="text"
-                    placeholder="Идентификатор"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Идентификатор (телефон или email)"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                 />
                 <input
                     type="password"
