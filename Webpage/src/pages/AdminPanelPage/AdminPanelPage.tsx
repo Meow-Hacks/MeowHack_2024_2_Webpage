@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -31,6 +32,8 @@ import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import CustomPaginationActionsTable from '../../components/TableData/TableData';
 import TableTest from '../../components/TableTest/TableTest';
 import { UniversalTable } from '@/components/UniversalTable/Table';
+import { useAuth } from '../../api/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const NAVIGATION: Navigation = [
   { kind: 'header', title: 'Основное' },
@@ -134,18 +137,29 @@ const customTheme = createTheme({
 });
 
 function SidebarFooterAccount({
-  onSignOut,
   onProfileClick,
-  onSignIn,
-  session,
   isSidebarCollapsed,
-}: SidebarFooterProps & {
-  onSignOut: () => void;
+}: {
   onProfileClick: () => void;
-  onSignIn: () => void;                                  ///////////////////////////////////
-  session: Session | null;
   isSidebarCollapsed: boolean;
 }) {
+  const { logout } = useAuth(); 
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
+  // Функция выхода из аккаунта
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth'); 
+    } catch (err) {
+      setError('Ошибка авторизации');
+      setOpen(true);
+      console.error('Ошибка авторизации:', err);
+    }
+  };
+
   return (
     <Box
       p={2}
@@ -167,48 +181,26 @@ function SidebarFooterAccount({
         alignItems="center"
         spacing={isSidebarCollapsed ? 0 : 1}
       >
-        {session ? (
-          <>
-            <Box
-              onClick={onProfileClick}
-              sx={{
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <AccountPreview variant={isSidebarCollapsed ? "condensed" : "expanded"} />
-            </Box>
-            {!isSidebarCollapsed && (
-              <Tooltip title="Выйти">
-                <IconButton onClick={onSignOut} color="primary" aria-label="Выйти">
-                  <ExitToAppIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </>
-        ) : (
-          !isSidebarCollapsed && (
-            <Tooltip title="Войти">
-              <Button
-                variant="text"
-                startIcon={<LoginIcon />}
-                onClick={onSignIn}
-                color="primary"
-                aria-label="Войти"
-                sx={{
-                  justifyContent: 'center',
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  },
-                }}
-              >
-                Войти
-              </Button>
+        <>
+          <Box
+            onClick={onProfileClick}
+            sx={{
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <AccountPreview variant={isSidebarCollapsed ? "condensed" : "expanded"} />
+          </Box>
+          {!isSidebarCollapsed && (
+            <Tooltip title="Выйти">
+              {/* кнопка выхода из аккаунта */}
+              <IconButton onClick={handleLogout} color="primary" aria-label="Выйти">  
+                <ExitToAppIcon />
+              </IconButton>
             </Tooltip>
-          )
-        )}
+          )}
+        </>
       </Stack>
     </Box>
   );
@@ -456,7 +448,7 @@ export default function DashboardLayoutAccountSidebar() {
       }}
       session={session}
     >
-      <DashboardLayout
+      {/* <DashboardLayout
         slots={{
           toolbarAccount: () => null,
           sidebarFooter: () => (
@@ -465,6 +457,19 @@ export default function DashboardLayoutAccountSidebar() {
               onProfileClick={handleProfileClick}                            
               onSignIn={handleSignIn}
               session={session}
+              isSidebarCollapsed={isSidebarCollapsed}
+            />
+          ),
+        }}
+      >
+        {renderContent()}
+      </DashboardLayout> */}
+      <DashboardLayout
+        slots={{
+          toolbarAccount: () => null,
+          sidebarFooter: () => (
+            <SidebarFooterAccount
+              onProfileClick={handleProfileClick}                            
               isSidebarCollapsed={isSidebarCollapsed}
             />
           ),
