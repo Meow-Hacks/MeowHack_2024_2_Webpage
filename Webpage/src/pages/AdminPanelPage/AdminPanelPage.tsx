@@ -324,7 +324,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Пу пу пууу</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -334,7 +334,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Пу пу пууу</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -344,7 +344,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Заварю ка</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -354,7 +354,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%'}}>
               <h3>Кофейку</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -364,7 +364,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%'}}>
               <h3>На</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -374,7 +374,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%'}}>
               <h3>Папей</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -384,7 +384,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Галочка, ты</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -394,7 +394,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Щас умрешь</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
@@ -413,7 +413,7 @@ export default function DashboardLayoutAccountSidebar() {
               <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
               <div style={{ height: 400, width: '100%' }}>
               <h3>Абоба</h3>
-              <UniversalTable columns={columns} data={data} />;
+              <UniversalTable columns={columns} data={data} />
               </div>
             </Box>
           );
