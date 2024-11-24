@@ -28,7 +28,7 @@ const fetcher = async (url: string) => {
     return response.data;
 };
 
-export const useAdminBranches = (config?: SWRConfiguration) => {
+export const useAdmin = (config?: SWRConfiguration) => {
     const { data, error, isValidating } = useSWR<Branch[]>(`${API_URL}/admin/branches`, fetcher, {
         ...config,
         shouldRetryOnError: false,
