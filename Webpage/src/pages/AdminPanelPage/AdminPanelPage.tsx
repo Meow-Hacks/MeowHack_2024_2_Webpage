@@ -34,6 +34,9 @@ import TableTest from '../../components/TableTest/TableTest';
 import { UniversalTable } from '@/components/UniversalTable/Table';
 import { useAuth } from '../../api/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { useAdminBranches } from '../../api/useAdminBranches';
+
+
 
 const NAVIGATION: Navigation = [
   { kind: 'header', title: 'Основное' },
@@ -143,7 +146,7 @@ function SidebarFooterAccount({
   onProfileClick: () => void;
   isSidebarCollapsed: boolean;
 }) {
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -152,7 +155,7 @@ function SidebarFooterAccount({
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/auth'); 
+      navigate('/auth');
     } catch (err) {
       setError('Ошибка авторизации');
       setOpen(true);
@@ -195,7 +198,7 @@ function SidebarFooterAccount({
           {!isSidebarCollapsed && (
             <Tooltip title="Выйти">
               {/* кнопка выхода из аккаунта */}
-              <IconButton onClick={handleLogout} color="primary" aria-label="Выйти">  
+              <IconButton onClick={handleLogout} color="primary" aria-label="Выйти">
                 <ExitToAppIcon />
               </IconButton>
             </Tooltip>
@@ -237,6 +240,8 @@ interface NavigationItem {
 type Navigation = NavigationItem[];
 
 export default function DashboardLayoutAccountSidebar() {
+  const { branches, loading, error, getBranches, addBranch, updateBranch, deleteBranch } = useAdminBranches();
+
   // State Management
   const [pathname, setPathname] = React.useState('/adminpanel');
   const [session, setSession] = React.useState<Session | null>(demoSession);
@@ -246,7 +251,7 @@ export default function DashboardLayoutAccountSidebar() {
   React.useEffect(() => {
     const handleIconClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (target.getAttribute('data-testid') === 'MenuIcon') {                 ///////////////////////////////////
+      if (target.getAttribute('data-testid') === 'MenuIcon') {
         console.log('Клик по MenuOpenIcon');
         setIsSidebarCollapsed(false);
       } else if (target.getAttribute('data-testid') === 'MenuOpenIcon') {
@@ -298,7 +303,7 @@ export default function DashboardLayoutAccountSidebar() {
   // Content Rendering
   const renderContent = () => {
     const currentNav = activeSegment ? findCurrentNav(NAVIGATION, activeSegment) : null;
-
+    console.log(branches)
     if (showAdminInfo && session?.user) {
       return (
         <Box>
@@ -330,7 +335,7 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'monitoring1':
+      case 'monitoring1':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
@@ -340,37 +345,38 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'access1':
+      case 'access1':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
+            <div style={{ height: 400, width: '100%' }}>
               <h3>Кофейку</h3>
               <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
-        case 'monitoring2':
+      case 'monitoring2':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
+            <div style={{ height: 400, width: '100%' }}>
               <h3>На</h3>
-              <UniversalTable columns={columns} data={data} />
+              <UniversalTable columns={[{ label: 'Филиал', key: 'name' }, { label: 'Адрес', key: 'address' },]}
+                data={branches} />
             </div>
           </Box>
         );
-        case 'access2':
+      case 'access2':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-            <div style={{ height: 400, width: '100%'}}>
+            <div style={{ height: 400, width: '100%' }}>
               <h3>Папей</h3>
               <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
         );
-        case 'state3':
+      case 'state3':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
@@ -380,7 +386,7 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'monitoring3':
+      case 'monitoring3':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
@@ -390,44 +396,44 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
-        case 'sales':
-          return (
-            <Box>
-              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-              <div style={{ height: 400, width: '100%' }}>
-                <CustomPaginationActionsTable />
-              </div>
-            </Box>
-          );
-          case 'traffic':
-          return (
-            <Box>
-              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-              <div style={{ height: 400, width: '100%' }}>
+      case 'sales':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <CustomPaginationActionsTable />
+            </div>
+          </Box>
+        );
+      case 'traffic':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
               <h3>Абоба</h3>
               <UniversalTable columns={columns} data={data} />
-              </div>
-            </Box>
-          );
-        case 'degree':
-          return (
-            <Box>
-              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-              <div style={{ height: 400, width: '100%' }}>
-                <TableTest />
-              </div>
-            </Box>
-          );
-          case 'integrations':
-          return (
-            <Box>
-              <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
-              <div style={{ height: 400, width: '100%' }}>
-              <br/><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
+            </div>
+          </Box>
+        );
+      case 'degree':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <TableTest />
+            </div>
+          </Box>
+        );
+      case 'integrations':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <br /><h3 style={{ fontSize: 40 }}>Бог с вами</h3>
               <h3 style={{ fontSize: 13 }}>ещё не закончил</h3>
-              </div>
-            </Box>
-          );
+            </div>
+          </Box>
+        );
       default:
         return <Typography variant="body1">Текущая страница: {currentNav?.title || 'Неизвестно'}</Typography>;
     }
@@ -469,7 +475,7 @@ export default function DashboardLayoutAccountSidebar() {
           toolbarAccount: () => null,
           sidebarFooter: () => (
             <SidebarFooterAccount
-              onProfileClick={handleProfileClick}                            
+              onProfileClick={handleProfileClick}
               isSidebarCollapsed={isSidebarCollapsed}
             />
           ),
