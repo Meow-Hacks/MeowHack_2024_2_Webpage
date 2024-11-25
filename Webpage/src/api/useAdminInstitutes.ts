@@ -7,12 +7,12 @@ const API_URL = 'http://127.0.0.1:5173/api';
 interface Institute {
     id: number;
     name: string;
-    address: string;
+    branch_id: number;
 }
 
 interface NewInstitute {
     name: string;
-    branch_id: string;
+    branch_id: number;
 }
 
 const fetcher = async (url: string) => {
