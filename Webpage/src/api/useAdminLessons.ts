@@ -10,16 +10,19 @@ interface Lesson {
     group_id: number;
     auditory_id: number;
     teacher_id: number;
+    institute_id: number;
     start_time: string; // timestamp
     end_time: string; // timestamp
     type_of_lesson: string;
 }
 
 interface NewLesson {
+    id: number;
     subject_id: number;
     group_id: number;
     auditory_id: number;
     teacher_id: number;
+    institute_id: number;
     start_time: string; // timestamp
     end_time: string; // timestamp
     type_of_lesson: string;
