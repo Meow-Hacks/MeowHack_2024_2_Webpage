@@ -5,10 +5,13 @@ const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
 interface Student {
+    id: number;
     name: string;
     secondname: string;
     lastname: string;
     role_id: number;
+    group_id: number;
+    institute_id: number;
     code: string;
     phone: string;
     mail: string;

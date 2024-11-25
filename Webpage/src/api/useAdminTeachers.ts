@@ -5,6 +5,7 @@ const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
 interface Teacher {
+    id: number;
     name: string;
     secondname: string;
     lastname: string;

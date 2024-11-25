@@ -126,7 +126,7 @@ export const useAdminGroups = (config?: SWRConfiguration) => {
     };
 
     return {
-        groups: data || [],
+        Groups: data || [],
         loading: isValidating,
         error,
         getGroups,
