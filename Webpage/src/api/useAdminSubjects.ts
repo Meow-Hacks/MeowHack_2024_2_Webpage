@@ -7,12 +7,14 @@ const API_URL = 'http://127.0.0.1:5173/api';
 interface Subject {
     id: number;
     group_code: string;
-    institute_id: number;
+    default_auditory_id: number;
+    duration: number;
 }
 
 interface NewSubject {
     group_code: string;
-    institute_id: number;
+    default_auditory_id: number;
+    duration: number;
 }
 
 const fetcher = async (url: string) => {

@@ -27,6 +27,13 @@ interface NewStudent {
     mail: string;
 }
 
+interface StudentMark {
+    id: number;
+    student_id: number;
+    lesson_id: number;
+    mark: number;
+}
+
 const fetcher = async (url: string) => {
     const access_token = localStorage.getItem('access_token');
     if (!access_token) throw new Error('Нет access_token');
@@ -78,6 +85,24 @@ export const useAdminStudents = (config?: SWRConfiguration) => {
             return response.data;
         } catch (err) {
             console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
+    const getStudentMarks = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<StudentMark[]>(`${API_URL}/admin/students/marks/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения оценок студента:', err);
             throw err;
         }
     };
@@ -143,6 +168,7 @@ export const useAdminStudents = (config?: SWRConfiguration) => {
         error,
         getStudents,
         getStudentById,
+        getStudentMarks,
         addStudent,
         updateStudent,
         deleteStudent,
