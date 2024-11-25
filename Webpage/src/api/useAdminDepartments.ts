@@ -4,18 +4,15 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
-interface Auditory {
+interface Department {
     id: number;
     name: string;
-    capacity: number;
-    branch_id: number;
-    status: boolean;
+    institute_id: number;
 }
 
-interface NewAuditory {
+interface NewDepartment {
     name: string;
-    capacity: number;
-    branch_id: number;
+    institute_id: number;
 }
 
 const fetcher = async (url: string) => {
@@ -31,18 +28,18 @@ const fetcher = async (url: string) => {
     return response.data;
 };
 
-export const useAdminAuditories = (config?: SWRConfiguration) => {
-    const { data, error, isValidating } = useSWR<Auditory[]>(`${API_URL}/admin/auditories`, fetcher, {
+export const useAdminDepartments = (config?: SWRConfiguration) => {
+    const { data, error, isValidating } = useSWR<Department[]>(`${API_URL}/admin/departments`, fetcher, {
         ...config,
         shouldRetryOnError: false,
     });
 
-    const getauditories = async () => {
+    const getDepartments = async () => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.get<Auditory[]>(`${API_URL}/admin/auditories`, {
+            const response = await axios.get<Department[]>(`${API_URL}/admin/departments`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
@@ -55,18 +52,18 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         }
     };
 
-    const addAuditory = async (newAuditory: NewAuditory) => {
+    const addDepartment = async (newDepartment: NewDepartment) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.post<Auditory>(`${API_URL}/admin/auditories`, newAuditory, {
+            const response = await axios.post<Department>(`${API_URL}/admin/departments`, newDepartment, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/departments`);
             return response.data;
         } catch (err) {
             console.error('Ошибка добавления филиала:', err);
@@ -74,36 +71,36 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         }
     };
 
-    const updateAuditory = async (id: number, updatedData: Partial<Auditory>) => {
+    const updateDepartment = async (id: number, updatedData: Partial<Department>) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.put(`${API_URL}/admin/auditories/${id}`, updatedData, {
+            await axios.put(`${API_URL}/admin/departments/${id}`, updatedData, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/departments`);
         } catch (err) {
             console.error('Ошибка обновления филиала:', err);
             throw err;
         }
     };
 
-    const deleteAuditory = async (id: number) => {
+    const deleteDepartment = async (id: number) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.delete(`${API_URL}/admin/auditories/${id}`, {
+            await axios.delete(`${API_URL}/admin/departments/${id}`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/departments`);
         } catch (err) {
             console.error('Ошибка удаления филиала:', err);
             throw err;
@@ -111,12 +108,12 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
     };
 
     return {
-        auditories: data || [],
+        Departments: data || [],
         loading: isValidating,
         error,
-        getauditories,
-        addAuditory,
-        updateAuditory,
-        deleteAuditory,
+        getDepartments,
+        addDepartment,
+        updateDepartment,
+        deleteDepartment,
     };
 };

@@ -4,18 +4,26 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
-interface Auditory {
-    id: number;
+interface Teacher {
     name: string;
-    capacity: number;
-    branch_id: number;
-    status: boolean;
+    secondname: string;
+    lastname: string;
+    role_id: number;
+    department_id: number;
+    code: string;
+    phone: string;
+    mail: string;
+    enter_token: string;
 }
 
-interface NewAuditory {
+interface NewTeacher {
     name: string;
-    capacity: number;
-    branch_id: number;
+    secondname: string;
+    lastname: string;
+    role_id: number;
+    department_id: number;
+    phone: string;
+    mail: string;
 }
 
 const fetcher = async (url: string) => {
@@ -31,18 +39,18 @@ const fetcher = async (url: string) => {
     return response.data;
 };
 
-export const useAdminAuditories = (config?: SWRConfiguration) => {
-    const { data, error, isValidating } = useSWR<Auditory[]>(`${API_URL}/admin/auditories`, fetcher, {
+export const useAdminTeachers = (config?: SWRConfiguration) => {
+    const { data, error, isValidating } = useSWR<Teacher[]>(`${API_URL}/admin/teachers`, fetcher, {
         ...config,
         shouldRetryOnError: false,
     });
 
-    const getauditories = async () => {
+    const getTeachers = async () => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.get<Auditory[]>(`${API_URL}/admin/auditories`, {
+            const response = await axios.get<Teacher[]>(`${API_URL}/admin/teachers`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
@@ -55,18 +63,18 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         }
     };
 
-    const addAuditory = async (newAuditory: NewAuditory) => {
+    const addTeacher = async (newTeacher: NewTeacher) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.post<Auditory>(`${API_URL}/admin/auditories`, newAuditory, {
+            const response = await axios.post<Teacher>(`${API_URL}/admin/teachers`, newTeacher, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/teachers`);
             return response.data;
         } catch (err) {
             console.error('Ошибка добавления филиала:', err);
@@ -74,36 +82,36 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         }
     };
 
-    const updateAuditory = async (id: number, updatedData: Partial<Auditory>) => {
+    const updateTeacher = async (id: number, updatedData: Partial<Teacher>) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.put(`${API_URL}/admin/auditories/${id}`, updatedData, {
+            await axios.put(`${API_URL}/admin/teachers/${id}`, updatedData, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/teachers`);
         } catch (err) {
             console.error('Ошибка обновления филиала:', err);
             throw err;
         }
     };
 
-    const deleteAuditory = async (id: number) => {
+    const deleteTeacher = async (id: number) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.delete(`${API_URL}/admin/auditories/${id}`, {
+            await axios.delete(`${API_URL}/admin/teachers/${id}`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/auditories`);
+            await mutate(`${API_URL}/admin/teachers`);
         } catch (err) {
             console.error('Ошибка удаления филиала:', err);
             throw err;
@@ -111,12 +119,12 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
     };
 
     return {
-        auditories: data || [],
+        Teachers: data || [],
         loading: isValidating,
         error,
-        getauditories,
-        addAuditory,
-        updateAuditory,
-        deleteAuditory,
+        getTeachers,
+        addTeacher,
+        updateTeacher,
+        deleteTeacher,
     };
 };
