@@ -4,15 +4,18 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
-interface Branch {
+interface Auditory {
     id: number;
     name: string;
-    address: string;
+    capacity: number;
+    branch_id: number;
+    status: boolean;
 }
 
-interface NewBranch {
+interface NewAuditory {
     name: string;
-    address: string;
+    capacity: number;
+    branch_id: number;
 }
 
 const fetcher = async (url: string) => {
@@ -29,17 +32,17 @@ const fetcher = async (url: string) => {
 };
 
 export const useAdmin = (config?: SWRConfiguration) => {
-    const { data, error, isValidating } = useSWR<Branch[]>(`${API_URL}/admin/branches`, fetcher, {
+    const { data, error, isValidating } = useSWR<Auditory[]>(`${API_URL}/admin/auditories`, fetcher, {
         ...config,
         shouldRetryOnError: false,
     });
 
-    const getBranches = async () => {
+    const getauditories = async () => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.get<Branch[]>(`${API_URL}/admin/branches`, {
+            const response = await axios.get<Auditory[]>(`${API_URL}/admin/auditories`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
@@ -52,18 +55,18 @@ export const useAdmin = (config?: SWRConfiguration) => {
         }
     };
 
-    const addBranch = async (newBranch: NewBranch) => {
+    const addAuditory = async (newAuditory: NewAuditory) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.post<Branch>(`${API_URL}/admin/branches`, newBranch, {
+            const response = await axios.post<Auditory>(`${API_URL}/admin/auditories`, newAuditory, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/branches`);
+            await mutate(`${API_URL}/admin/auditories`);
             return response.data;
         } catch (err) {
             console.error('Ошибка добавления филиала:', err);
@@ -71,36 +74,36 @@ export const useAdmin = (config?: SWRConfiguration) => {
         }
     };
 
-    const updateBranch = async (id: number, updatedData: Partial<Branch>) => {
+    const updateAuditory = async (id: number, updatedData: Partial<Auditory>) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.put(`${API_URL}/admin/branches/${id}`, updatedData, {
+            await axios.put(`${API_URL}/admin/auditories/${id}`, updatedData, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/branches`);
+            await mutate(`${API_URL}/admin/auditories`);
         } catch (err) {
             console.error('Ошибка обновления филиала:', err);
             throw err;
         }
     };
 
-    const deleteBranch = async (id: number) => {
+    const deleteAuditory = async (id: number) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            await axios.delete(`${API_URL}/admin/branches/${id}`, {
+            await axios.delete(`${API_URL}/admin/auditories/${id}`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             });
 
-            await mutate(`${API_URL}/admin/branches`);
+            await mutate(`${API_URL}/admin/auditories`);
         } catch (err) {
             console.error('Ошибка удаления филиала:', err);
             throw err;
@@ -108,12 +111,12 @@ export const useAdmin = (config?: SWRConfiguration) => {
     };
 
     return {
-        branches: data || [],
+        auditories: data || [],
         loading: isValidating,
         error,
-        getBranches,
-        addBranch,
-        updateBranch,
-        deleteBranch,
+        getauditories,
+        addAuditory,
+        updateAuditory,
+        deleteAuditory,
     };
 };
