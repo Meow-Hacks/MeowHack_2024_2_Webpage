@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
+import { MenuItem } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
 import { createTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
 import EventIcon from '@mui/icons-material/Event';
 import BusinessIcon from '@mui/icons-material/Business';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
@@ -24,18 +23,20 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import LoginIcon from '@mui/icons-material/Login';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, SidebarFooterProps } from '@toolpad/core/DashboardLayout';
 import { AccountPreview, SignOutButton } from '@toolpad/core/Account';
 import type { Navigation, Router, Session } from '@toolpad/core/AppProvider';
 import CustomPaginationActionsTable from '../../components/TableData/TableData';
 import TableTest from '../../components/TableTest/TableTest';
+import DropdownFilter from '@/components/FilterComponent/Filter';
 import { UniversalTable } from '@/components/UniversalTable/Table';
 import { useAuth } from '../../api/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useAdminBranches } from '../../api/useAdminBranches';
-
+import { useAdminInstitutes } from '@/api/useAdminInstitutes';
+import { useAdminGroups } from '@/api/useAdminGroups';
+import { useAdminLessons } from '@/api/useAdminLessons';
 
 
 const NAVIGATION: Navigation = [
@@ -197,7 +198,6 @@ function SidebarFooterAccount({
           </Box>
           {!isSidebarCollapsed && (
             <Tooltip title="Выйти">
-              {/* кнопка выхода из аккаунта */}
               <IconButton onClick={handleLogout} color="primary" aria-label="Выйти">
                 <ExitToAppIcon />
               </IconButton>
@@ -240,8 +240,25 @@ interface NavigationItem {
 type Navigation = NavigationItem[];
 
 export default function DashboardLayoutAccountSidebar() {
-  const { branches, loading, error, getBranches, addBranch, updateBranch, deleteBranch } = useAdminBranches();
+  const { branches, loading: branchesLoading, error: branchesError, getBranches, addBranch, updateBranch, deleteBranch } = useAdminBranches();
+  const { Institutes, loading: institutesLoading, error: institutesError, getInstitutes, addInstitute, updateInstitute, deleteInstitute } = useAdminInstitutes();
+  const { groups, loading: groupsLoading, error: groupsError, getGroups, getGroupById, addGroup, updateGroup, deleteGroup } = useAdminGroups();
+  const { Lessons, loading: lessonsLoading, error: lessonsError, getLessons, getLessonById, addLesson, updateLesson, deleteLesson } = useAdminLessons();
 
+  const fetchCities = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'];
+  };
+
+  // Преобразуем данные для фильтра
+  const fetchGroups = async () => {
+    if (!groups) return [];
+    return groups.map((group) => group.group_code);
+  };
+  const fetchInstitutes = async () => {
+    if (!Institutes) return [];
+    return Institutes.map((institute) => institute.name);
+  };
   // State Management
   const [pathname, setPathname] = React.useState('/adminpanel');
   const [session, setSession] = React.useState<Session | null>(demoSession);
@@ -318,10 +335,21 @@ export default function DashboardLayoutAccountSidebar() {
       case 'dashboard':
         return (
           <Box>
-            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Пу пу пууу</h3>
-              <UniversalTable columns={columns} data={data} />
+              <Box padding={2}>
+                <DropdownFilter
+                  label="Факультет"
+                  fetchOptions={fetchInstitutes}
+                  onChange={(value) => console.log('Выбран институт:', value)}
+                />
+                <DropdownFilter
+                  label="Группа"
+                  fetchOptions={fetchGroups}
+                  onChange={(value) => console.log('Выбрана страна:', value)}
+                />
+              </Box>
+              <UniversalTable columns={[{ label: 'Предмет', key: 'subject_id' }, { label: 'Группа', key: 'group_id' }, { label: 'Аудитория', key: 'auditory_id' }, { label: 'Начало', key: 'start_time' }, { label: 'Конец', key: 'end_time' }]}
+                data={Lessons} />
             </div>
           </Box>
         );
@@ -363,6 +391,15 @@ export default function DashboardLayoutAccountSidebar() {
               <h3>На</h3>
               <UniversalTable columns={[{ label: 'Филиал', key: 'name' }, { label: 'Адрес', key: 'address' },]}
                 data={branches} />
+              <UniversalTable columns={[{ label: 'Институт', key: 'name' }, { label: 'Филиал', key: 'branch_name' },]}
+                data={
+                  Institutes.map((institute) => {
+                    const branch = branches.find((b) => b.id == institute.branch_id);
+                    return {
+                      ...institute,
+                      branch_name: branch ? branch.name : 'Не найдено', // Название филиала или сообщение о том, что он не найден
+                    };
+                  })} />
             </div>
           </Box>
         );
@@ -454,22 +491,6 @@ export default function DashboardLayoutAccountSidebar() {
       }}
       session={session}
     >
-      {/* <DashboardLayout
-        slots={{
-          toolbarAccount: () => null,
-          sidebarFooter: () => (
-            <SidebarFooterAccount
-              onSignOut={handleSignOut}
-              onProfileClick={handleProfileClick}                            
-              onSignIn={handleSignIn}
-              session={session}
-              isSidebarCollapsed={isSidebarCollapsed}
-            />
-          ),
-        }}
-      >
-        {renderContent()}
-      </DashboardLayout> */}
       <DashboardLayout
         slots={{
           toolbarAccount: () => null,
