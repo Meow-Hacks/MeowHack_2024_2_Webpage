@@ -52,6 +52,24 @@ export const useAdminGroups = (config?: SWRConfiguration) => {
         }
     };
 
+    const getGroupById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Group>(`${API_URL}/admin/groups/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addGroup = async (newGroup: NewGroup) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -112,6 +130,7 @@ export const useAdminGroups = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getGroups,
+        getGroupById,
         addGroup,
         updateGroup,
         deleteGroup,

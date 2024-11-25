@@ -52,6 +52,24 @@ export const useAdminInstitutes = (config?: SWRConfiguration) => {
         }
     };
 
+    const getInstituteyById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Institute>(`${API_URL}/admin/institutes/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addInstitute = async (newInstitute: NewInstitute) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -112,6 +130,7 @@ export const useAdminInstitutes = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getInstitutes,
+        getInstituteyById,
         addInstitute,
         updateInstitute,
         deleteInstitute,

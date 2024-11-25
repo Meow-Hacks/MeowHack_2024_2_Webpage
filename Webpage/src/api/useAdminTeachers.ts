@@ -63,6 +63,24 @@ export const useAdminTeachers = (config?: SWRConfiguration) => {
         }
     };
 
+    const getTeacherById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Teacher>(`${API_URL}/admin/teachers/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addTeacher = async (newTeacher: NewTeacher) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -123,6 +141,7 @@ export const useAdminTeachers = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getTeachers,
+        getTeacherById,
         addTeacher,
         updateTeacher,
         deleteTeacher,

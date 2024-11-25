@@ -63,6 +63,24 @@ export const useAdminStaffs = (config?: SWRConfiguration) => {
         }
     };
 
+    const getStaffById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Staff>(`${API_URL}/admin/staff/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addStaff = async (newStaff: NewStaff) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -123,6 +141,7 @@ export const useAdminStaffs = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getStaffs,
+        getStaffById,
         addStaff,
         updateStaff,
         deleteStaff,

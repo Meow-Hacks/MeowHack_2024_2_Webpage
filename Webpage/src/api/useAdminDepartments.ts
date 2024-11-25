@@ -52,6 +52,24 @@ export const useAdminDepartments = (config?: SWRConfiguration) => {
         }
     };
 
+    const getDepartmentById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Department>(`${API_URL}/admin/departments/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addDepartment = async (newDepartment: NewDepartment) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -112,6 +130,7 @@ export const useAdminDepartments = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getDepartments,
+        getDepartmentById,
         addDepartment,
         updateDepartment,
         deleteDepartment,

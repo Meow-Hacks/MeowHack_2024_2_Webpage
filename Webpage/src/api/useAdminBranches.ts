@@ -52,6 +52,24 @@ export const useAdminBranches = (config?: SWRConfiguration) => {
         }
     };
 
+    const getBranchById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Branch>(`${API_URL}/admin/branches/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addBranch = async (newBranch: NewBranch) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -112,6 +130,7 @@ export const useAdminBranches = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getBranches,
+        getBranchById,
         addBranch,
         updateBranch,
         deleteBranch,

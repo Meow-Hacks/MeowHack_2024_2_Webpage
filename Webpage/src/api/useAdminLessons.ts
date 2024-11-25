@@ -62,6 +62,24 @@ export const useAdminLessons = (config?: SWRConfiguration) => {
         }
     };
 
+    const getLessonById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Lesson>(`${API_URL}/admin/lessons/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addLesson = async (newLesson: NewLesson) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -122,6 +140,7 @@ export const useAdminLessons = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getLessons,
+        getLessonById,
         addLesson,
         updateLesson,
         deleteLesson,

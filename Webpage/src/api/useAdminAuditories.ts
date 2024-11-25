@@ -55,6 +55,24 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         }
     };
 
+    const getAuditoryById = async (id: number) => {
+        try {
+            const access_token = localStorage.getItem('access_token');
+            if (!access_token) throw new Error('Нет access_token');
+
+            const response = await axios.get<Auditory>(`${API_URL}/admin/auditories/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            });
+
+            return response.data;
+        } catch (err) {
+            console.error('Ошибка получения филиала:', err);
+            throw err;
+        }
+    };
+
     const addAuditory = async (newAuditory: NewAuditory) => {
         try {
             const access_token = localStorage.getItem('access_token');
@@ -115,6 +133,7 @@ export const useAdminAuditories = (config?: SWRConfiguration) => {
         loading: isValidating,
         error,
         getauditories,
+        getAuditoryById,
         addAuditory,
         updateAuditory,
         deleteAuditory,
