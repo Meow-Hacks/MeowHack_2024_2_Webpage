@@ -6,13 +6,13 @@ const API_URL = 'http://127.0.0.1:5173/api';
 // Типы данных
 interface Subject {
     id: number;
-    group_code: string;
+    name: string;
     default_auditory_id: number;
     duration: number;
 }
 
 interface NewSubject {
-    group_code: string;
+    name: string;
     default_auditory_id: number;
     duration: number;
 }
