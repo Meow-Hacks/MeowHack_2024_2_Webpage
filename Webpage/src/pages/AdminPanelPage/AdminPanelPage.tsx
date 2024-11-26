@@ -591,7 +591,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>На</h3>
               <UniversalTable columns={[{ label: 'Институт', key: 'name' }, { label: 'Филиал', key: 'branch_name' },]}
                 data={
                   Institutes.map((institute) => {
