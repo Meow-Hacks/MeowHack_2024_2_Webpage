@@ -22,6 +22,11 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import SpeedIcon from '@mui/icons-material/Speed';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SchoolIcon from '@mui/icons-material/School';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, SidebarFooterProps } from '@toolpad/core/DashboardLayout';
@@ -40,6 +45,7 @@ import { useAdminLessons } from '@/api/useAdminLessons';
 import { useAdminSubjects } from '@/api/useAdminSubjects';
 import { useAdminAuditories } from '@/api/useAdminAuditories';
 import { useAdminTeachers } from '@/api/useAdminTeachers';
+import { useAdminDepartments } from '@/api/useAdminDepartments';
 
 
 const NAVIGATION: Navigation = [
@@ -91,6 +97,17 @@ const NAVIGATION: Navigation = [
           { kind: 'page', segment: 'monitoring3', title: 'Успеваемость', icon: <BarChartIcon /> },
         ],
       },
+    ],
+  },
+  {
+    kind: 'page',
+    segment: 'structure-editor',
+    title: 'Редактор структуры',
+    icon: <EditIcon />,
+    children: [
+      { kind: 'page', segment: 'branches', title: 'Филиалы', icon: <LocationCityIcon /> },
+      { kind: 'page', segment: 'institutes', title: 'Институты', icon: <AccountBalanceIcon /> },
+      { kind: 'page', segment: 'departments', title: 'Кафедры', icon: <SchoolIcon /> },
     ],
   },
   {
@@ -250,6 +267,7 @@ export default function DashboardLayoutAccountSidebar() {
   const { subjects, loading: subjectsLoading, error: subjectsError, getSubjects, getSubjectById, addSubject, updateSubject, deleteSubject } = useAdminSubjects();
   const { auditories, loading: auditoriesLoading, error: auditoriesError, getauditories, getAuditoryById, addAuditory, updateAuditory, deleteAuditory } = useAdminAuditories();
   const { Teachers, loading: teachersLoading, error: teachersError, getTeachers, getTeacherById, addTeacher, updateTeacher, deleteTeacher } = useAdminTeachers();
+  const { Departments, loading: departmentsLoading, error: departmentsError, getDepartments, addDepartment, updateDepartment, deleteDepartment } = useAdminDepartments();
 
 
   const [selectedInstitute, setSelectedInstitute] = useState<string | null>(null);
@@ -279,6 +297,92 @@ export default function DashboardLayoutAccountSidebar() {
   const [session, setSession] = React.useState<Session | null>(demoSession);
   const [showAdminInfo, setShowAdminInfo] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  // State Management for Branches
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openAddDialog, setOpenAddDialog] = React.useState(false);
+  const [selectedBranch, setSelectedBranch] = React.useState<any>(null);
+  const [editedBranch, setEditedBranch] = React.useState<{ name: string; address: string }>({
+    name: '',
+    address: '',
+  });
+  const [newBranch, setNewBranch] = React.useState<{ name: string; address: string }>({
+    name: '',
+    address: '',
+  });
+
+  const handleEditClick = (branch: any) => {
+    setSelectedBranch(branch);
+    setEditedBranch({
+      name: branch.name || '',
+      address: branch.address || '',
+    });
+    setOpenEditDialog(true);
+  };
+
+  const handleDeleteClick = (branch: any) => {
+    setSelectedBranch(branch);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleAddClick = () => {
+    setNewBranch({
+      name: '',
+      address: '',
+    });
+    setOpenAddDialog(true);
+  };
+
+  const handleEditChange = (field: keyof typeof editedBranch, value: string) => {
+    setEditedBranch((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddChange = (field: keyof typeof newBranch, value: string) => {
+    setNewBranch((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleEditSave = async () => {
+    if (selectedBranch) {
+      try {
+        await updateBranch(selectedBranch.id, editedBranch);
+        setOpenEditDialog(false);
+        setSelectedBranch(null);
+        setEditedBranch({ name: '', address: '' });
+      } catch (err) {
+        console.error('Ошибка при обновлении филиала:', err);
+      }
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedBranch) {
+      try {
+        await deleteBranch(selectedBranch.id);
+        setOpenDeleteDialog(false);
+        setSelectedBranch(null);
+      } catch (err) {
+        console.error('Ошибка при удалении филиала:', err);
+      }
+    }
+  };
+
+  const handleAddSave = async () => {
+    try {
+      if (newBranch.name && newBranch.address) {
+        await addBranch(newBranch);
+        setOpenAddDialog(false);
+        setNewBranch({ name: '', address: '' });
+      } else {
+        console.error('Необходимо заполнить обязательные поля');
+      }
+    } catch (err) {
+      console.error('Ошибка при добавлении филиала:', err);
+    }
+  };
+
+
+
 
   React.useEffect(() => {
     const handleIconClick = (event: MouseEvent) => {
@@ -368,15 +472,15 @@ export default function DashboardLayoutAccountSidebar() {
                 />
               </Box>
               <UniversalTable columns={[
-                { label: 'Предмет', key: 'subject_name' }, 
-                { label: 'Группа', key: 'group_name' }, 
+                { label: 'Предмет', key: 'subject_name' },
+                { label: 'Группа', key: 'group_name' },
                 { label: 'Преподователь', key: 'teacher_name' },
-                { label: 'Аудитория', key: 'auditory_number' }, 
+                { label: 'Аудитория', key: 'auditory_number' },
                 { label: 'Тип пары', key: 'lessons' },
-                { label: 'Начало', key: 'start_time' }, 
+                { label: 'Начало', key: 'start_time' },
                 { label: 'Конец', key: 'end_time' },
                 { label: 'Институт', key: 'institute_name' },
-                
+
               ]}
                 data={
                   filteredLessons.map((lesson) => {
@@ -400,7 +504,7 @@ export default function DashboardLayoutAccountSidebar() {
                     }
                   })
                 }
-                   />
+              />
             </div>
           </Box>
         );
@@ -476,8 +580,8 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>На</h3>
-              <UniversalTable columns={[{ label: 'Филиал', key: 'name' }, { label: 'Адрес', key: 'address' },]}
-                data={branches} />
+              {/* <UniversalTable columns={[{ label: 'Филиал', key: 'name' }, { label: 'Адрес', key: 'address' },]}
+                data={branches} /> */}
               <UniversalTable columns={[{ label: 'Институт', key: 'name' }, { label: 'Филиал', key: 'branch_name' },]}
                 data={
                   Institutes.map((institute) => {
@@ -558,6 +662,98 @@ export default function DashboardLayoutAccountSidebar() {
             </div>
           </Box>
         );
+      case 'branches':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <h3>Филиалы</h3>
+              <UniversalTable
+                columns={[
+                  { label: 'Филиал', key: 'name' },
+                  { label: 'Адрес', key: 'address' },
+                  {
+                    label: 'Действия',
+                    key: 'actions',
+                    render: (value, row) => (
+                      <>
+                        <IconButton onClick={() => handleEditClick(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteClick(row)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    ),
+                  },
+                ]}
+                data={branches}
+              />
+            </div>
+
+          </Box>
+        );
+
+        case 'institutes':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <UniversalTable
+                columns={[
+                  { label: 'Институт', key: 'name' },
+                  {
+                    label: 'Действия',
+                    key: 'actions',
+                    render: (value, row) => (
+                      <>
+                        <IconButton onClick={() => handleEditClick(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteClick(row)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    ),
+                  },
+                ]}
+                data={Institutes}
+              />
+            </div>
+
+          </Box>
+        );
+
+        case 'departments':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <UniversalTable
+                columns={[
+                  { label: 'Институт', key: 'name' },
+                  {
+                    label: 'Действия',
+                    key: 'actions',
+                    render: (value, row) => (
+                      <>
+                        <IconButton onClick={() => handleEditClick(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteClick(row)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    ),
+                  },
+                ]}
+                data={Departments}
+              />
+            </div>
+
+          </Box>
+        );
+
       default:
         return <Typography variant="body1">Текущая страница: {currentNav?.title || 'Неизвестно'}</Typography>;
     }
@@ -573,7 +769,7 @@ export default function DashboardLayoutAccountSidebar() {
       router={router}
       theme={customTheme}
       authentication={{
-        signIn: handleSignIn,                                            //////////////////////////////////
+        signIn: handleSignIn,
         signOut: handleSignOut,
       }}
       session={session}
@@ -594,3 +790,7 @@ export default function DashboardLayoutAccountSidebar() {
     </AppProvider>
   );
 }
+function moment(isoString: string) {
+  throw new Error('Function not implemented.');
+}
+
