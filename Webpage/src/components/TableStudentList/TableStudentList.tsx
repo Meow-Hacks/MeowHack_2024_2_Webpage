@@ -116,11 +116,12 @@ const TableTest: React.FC = () => {
         name: '',
         lastname: '',
         secondname: '',
-        role_id: 2,
+        role_id: 3,
         group_id: undefined,
         institute_id: undefined,
         phone: '',
         mail: '',
+        // enter_token: undefined
     });
 
     const { Students, loading, error, addStudent, updateStudent, deleteStudent } = useAdminStudents();
@@ -252,6 +253,7 @@ const TableTest: React.FC = () => {
             }
         } catch (err) {
             console.error('Ошибка при добавлении студента:', err);
+            alert(`Ошибка при добавлении студента: ${err.message || err}`);
         }
     };
 
@@ -268,7 +270,6 @@ const TableTest: React.FC = () => {
                         <TableRow>
                             <TableCell>ФИО</TableCell>
                             <TableCell align="right">Институт</TableCell>
-                            <TableCell align="right">Курс</TableCell>
                             <TableCell align="right">Группа</TableCell>
                             <TableCell align="right">Действия</TableCell>
                         </TableRow>
@@ -288,7 +289,6 @@ const TableTest: React.FC = () => {
                                     {student.lastname} {student.name} {student.secondname}
                                 </TableCell>
                                 <TableCell align="right">{getInstituteName(student.institute_id) || '—'}</TableCell>
-                                <TableCell align="right">{student.course || '—'}</TableCell>
                                 <TableCell align="right">{getGroupName(student.group_id) || '—'}</TableCell>
                                 <TableCell align="right">
                                     <IconButton
