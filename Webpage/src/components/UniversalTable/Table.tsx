@@ -27,7 +27,7 @@ interface TablePaginationActionsProps {
 }
 
 interface UniversalTableProps {
-  columns: { label: string; key: string }[]; // Определение колонок
+  columns: { label: string; key: string, render?: (value: any) => JSX.Element }[]; // Определение колонок
   data: unknown[]; // Данные таблицы
   rowsPerPageOptions?: number[]; // Опции для выбора количества строк на странице
 }
@@ -124,7 +124,7 @@ export const UniversalTable: React.FC<UniversalTableProps> = ({
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
+          {/* <TableBody>
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
@@ -142,7 +142,27 @@ export const UniversalTable: React.FC<UniversalTableProps> = ({
                 <TableCell colSpan={columns.length} />
               </TableRow>
             )}
+          </TableBody> */}
+          <TableBody>
+            {(rowsPerPage > 0
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : data
+            ).map((row, index) => (
+              <TableRow key={index}>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {column.render ? column.render(row[column.key]) : row[column.key]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={columns.length} />
+              </TableRow>
+            )}
           </TableBody>
+
           <TableFooter>
             <TableRow>
               <TablePagination
