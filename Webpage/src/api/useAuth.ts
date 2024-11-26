@@ -2,7 +2,7 @@ import useSWR, { SWRConfiguration, mutate } from 'swr';
 import axios from 'axios';
 import { API_URL } from '@/utils/utils';
 
-// const API_URL = 'http://127.0.0.1:5173/api';
+// import { API_URL } from '@/utils/utils';
 
 // Типы данных
 interface LoginResponse {
