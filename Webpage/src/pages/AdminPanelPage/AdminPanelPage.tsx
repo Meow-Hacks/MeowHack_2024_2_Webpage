@@ -529,7 +529,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Пу пу пууу</h3>
               <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
@@ -583,7 +582,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Кофейку</h3>
               <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
@@ -611,7 +609,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Папей</h3>
 
             </div>
           </Box>
@@ -621,7 +618,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Галочка, ты</h3>
               <UniversalTable columns={[{
                 label: 'ФИО', key: 'name'
               }, { label: 'Группа', key: 'group' }, { label: 'Факультет', key: 'institute' }, { label: 'Кафедра', key: 'department' }]}
@@ -648,7 +644,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Щас умрешь</h3>
               <TableTest />
             </div>
           </Box>
@@ -667,7 +662,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Абоба</h3>
               <UniversalTable columns={columns} data={data} />
             </div>
           </Box>
@@ -856,7 +850,9 @@ export default function DashboardLayoutAccountSidebar() {
         );
 
       default:
-        return <Typography variant="body1">Текущая страница: {currentNav?.title || 'Неизвестно'}</Typography>;
+        return <Typography variant="body1">
+          <h1 style={{display: 'flex', textAlign: 'center', justifyContent: 'center', marginTop: 50, fontSize: 30}}>Добро пожаловать в Админ-панель</h1>
+        </Typography>;
     }
   };
 
