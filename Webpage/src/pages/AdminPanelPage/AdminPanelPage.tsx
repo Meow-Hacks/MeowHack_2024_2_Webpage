@@ -28,6 +28,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import GroupIcon from '@mui/icons-material/Group';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, SidebarFooterProps } from '@toolpad/core/DashboardLayout';
 import { AccountPreview, SignOutButton } from '@toolpad/core/Account';
@@ -48,6 +49,7 @@ import { useAdminTeachers } from '@/api/useAdminTeachers';
 import { useAdminDepartments } from '@/api/useAdminDepartments';
 import { useAdminStudents } from '@/api/useAdminStudents';
 import moment from 'moment';
+import { useAdminStaffs } from '@/api/useAdminStaff';
 
 
 const NAVIGATION: Navigation = [
@@ -110,6 +112,16 @@ const NAVIGATION: Navigation = [
       { kind: 'page', segment: 'branches', title: 'Филиалы', icon: <LocationCityIcon /> },
       { kind: 'page', segment: 'institutes', title: 'Институты', icon: <AccountBalanceIcon /> },
       { kind: 'page', segment: 'departments', title: 'Кафедры', icon: <SchoolIcon /> },
+    ],
+  },
+  {
+    kind: 'page',
+    segment: 'worker-editor',
+    title: 'Работники',
+    icon: <GroupIcon />,
+    children: [
+      { kind: 'page', segment: 'teachers', title: 'Учителя', icon: <SchoolIcon /> },
+      { kind: 'page', segment: 'staff', title: 'Персонал', icon: <BusinessIcon /> },
     ],
   },
   {
@@ -271,7 +283,7 @@ export default function DashboardLayoutAccountSidebar() {
   const { Teachers, loading: teachersLoading, error: teachersError, getTeachers, getTeacherById, addTeacher, updateTeacher, deleteTeacher } = useAdminTeachers();
   const { Students, loading: studentsLoading, error: studentsError, getStudents, getStudentById, getStudentMarks, addStudent, updateStudent, deleteStudent } = useAdminStudents();
   const { Departments, loading: departmentsLoading, error: departmentsError, getDepartments, addDepartment, updateDepartment, deleteDepartment } = useAdminDepartments();
-
+  const { Staffs, loading: staffsLoading, error: staffsError, getStaffs, addStaff, updateStaff, deleteStaff } = useAdminStaffs();
 
   const [selectedInstitute, setSelectedInstitute] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
@@ -604,7 +616,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Папей</h3>
-              
+
             </div>
           </Box>
         );
@@ -615,12 +627,13 @@ export default function DashboardLayoutAccountSidebar() {
             <div style={{ height: 400, width: '100%' }}>
               <h3>Галочка, ты</h3>
               <UniversalTable columns={[{
-                 label: 'ФИО', key: 'name' }, { label: 'Группа', key: 'group' }, { label: 'Факультет', key: 'institute' }, { label: 'Кафедра', key: 'department' }]} 
-                 data={
+                label: 'ФИО', key: 'name'
+              }, { label: 'Группа', key: 'group' }, { label: 'Факультет', key: 'institute' }, { label: 'Кафедра', key: 'department' }]}
+                data={
                   Students.map((student) => {
                     const name = student.name;
                     const group = Groups.find((g) => g.id == student.group_id);
-                    const inst = Institutes.find((i)  => i.id == student.institute_id);
+                    const inst = Institutes.find((i) => i.id == student.institute_id);
                     // const depart = Institutes.find((i) => i.id == Departments.institute_id)
                     return {
                       name: `${student.lastname} ${student.name} ${student.secondname}`,
@@ -629,8 +642,8 @@ export default function DashboardLayoutAccountSidebar() {
                       institute: inst ? inst.name : 'Не найдено',
                     }
                   })
-                  }
-                   />
+                }
+              />
             </div>
           </Box>
         );
@@ -668,7 +681,7 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              
+
             </div>
           </Box>
         );
@@ -714,7 +727,7 @@ export default function DashboardLayoutAccountSidebar() {
           </Box>
         );
 
-        case 'institutes':
+      case 'institutes':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
@@ -744,7 +757,7 @@ export default function DashboardLayoutAccountSidebar() {
           </Box>
         );
 
-        case 'departments':
+      case 'departments':
         return (
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
@@ -774,10 +787,74 @@ export default function DashboardLayoutAccountSidebar() {
           </Box>
         );
 
+      case 'teachers':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <UniversalTable
+                columns={[
+                  { label: 'имя', key: 'name' },
+                  { label: 'фамилия', key: 'lastname' },
+                  { label: '3', key: 'secondname' },
+                  {
+                    label: 'Действия',
+                    key: 'actions',
+                    render: (value, row) => (
+                      <>
+                        <IconButton onClick={() => handleEditClick(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteClick(row)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    ),
+                  },
+                ]}
+                data={Teachers}
+              />
+            </div>
+
+          </Box>
+        );
+
+      case 'staff':
+        return (
+          <Box>
+            <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
+            <div style={{ height: 400, width: '100%' }}>
+              <UniversalTable
+                columns={[
+                  { label: 'ФИО', key: 'name' },
+                  {
+                    label: 'Действия',
+                    key: 'actions',
+                    render: (value, row) => (
+                      <>
+                        <IconButton onClick={() => handleEditClick(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteClick(row)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    ),
+                  },
+                ]}
+                data={Staffs}
+              />
+            </div>
+
+          </Box>
+        );
+
       default:
         return <Typography variant="body1">Текущая страница: {currentNav?.title || 'Неизвестно'}</Typography>;
     }
   };
+
+
 
   return (
     <AppProvider
