@@ -1,7 +1,8 @@
 import useSWR, { SWRConfiguration, mutate } from 'swr';
 import axios from 'axios';
+import { API_URL } from '@/utils/utils';
 
-const API_URL = 'https://meowhacks.efbo.ru/api';
+// import { API_URL } from '@/utils/utils';
 
 // Типы данных
 interface LoginResponse {
