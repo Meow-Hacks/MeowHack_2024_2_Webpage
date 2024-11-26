@@ -26,3 +26,5 @@ export const getSubjectName = (
     const subject = subjects.find((subj) => subj.id === lesson.subject_id);
     return subject ? subject.name : 'Не найден';
 };
+
+export const API_URL = (import.meta as any).env.DEV ? 'http://127.0.0.1:5173/api' : 'https://meowhacks.efbo.ru/api'
