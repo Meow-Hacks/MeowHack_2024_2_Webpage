@@ -46,6 +46,8 @@ import { useAdminSubjects } from '@/api/useAdminSubjects';
 import { useAdminAuditories } from '@/api/useAdminAuditories';
 import { useAdminTeachers } from '@/api/useAdminTeachers';
 import { useAdminDepartments } from '@/api/useAdminDepartments';
+import { useAdminStudents } from '@/api/useAdminStudents';
+import moment from 'moment';
 
 
 const NAVIGATION: Navigation = [
@@ -267,6 +269,7 @@ export default function DashboardLayoutAccountSidebar() {
   const { subjects, loading: subjectsLoading, error: subjectsError, getSubjects, getSubjectById, addSubject, updateSubject, deleteSubject } = useAdminSubjects();
   const { auditories, loading: auditoriesLoading, error: auditoriesError, getauditories, getAuditoryById, addAuditory, updateAuditory, deleteAuditory } = useAdminAuditories();
   const { Teachers, loading: teachersLoading, error: teachersError, getTeachers, getTeacherById, addTeacher, updateTeacher, deleteTeacher } = useAdminTeachers();
+  const { Students, loading: studentsLoading, error: studentsError, getStudents, getStudentById, getStudentMarks, addStudent, updateStudent, deleteStudent } = useAdminStudents();
   const { Departments, loading: departmentsLoading, error: departmentsError, getDepartments, addDepartment, updateDepartment, deleteDepartment } = useAdminDepartments();
 
 
@@ -490,6 +493,7 @@ export default function DashboardLayoutAccountSidebar() {
                     const auditory = auditories.find((a) => a.id == lesson.auditory_id);
                     const lessons = lesson.type_of_lesson;
                     const start_time = formatDateTime(lesson.start_time);
+                    // const start_time = lesson.start_time;
                     const end_time = formatDateTime(lesson.end_time);
                     const institute = Institutes.find((i) => i.id == lesson.institute_id);
                     return {
@@ -600,7 +604,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Папей</h3>
-              <UniversalTable columns={columns} data={data} />
+              
             </div>
           </Box>
         );
@@ -610,7 +614,23 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Галочка, ты</h3>
-              <UniversalTable columns={columns} data={data} />
+              <UniversalTable columns={[{
+                 label: 'ФИО', key: 'name' }, { label: 'Группа', key: 'group' }, { label: 'Факультет', key: 'institute' }, { label: 'Кафедра', key: 'department' }]} 
+                 data={
+                  Students.map((student) => {
+                    const name = student.name;
+                    const group = Groups.find((g) => g.id == student.group_id);
+                    const inst = Institutes.find((i)  => i.id == student.institute_id);
+                    // const depart = Institutes.find((i) => i.id == Departments.institute_id)
+                    return {
+                      name: `${student.lastname} ${student.name} ${student.secondname}`,
+                      // teacher ? `${teacher.name} ${teacher.secondname} ${teacher.lastname}` : 'Не найдено',
+                      group: group ? group.group_code : 'Не найдено',
+                      institute: inst ? inst.name : 'Не найдено',
+                    }
+                  })
+                  }
+                   />
             </div>
           </Box>
         );
@@ -620,7 +640,7 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Щас умрешь</h3>
-              <UniversalTable columns={columns} data={data} />
+              <TableTest />
             </div>
           </Box>
         );
@@ -648,7 +668,7 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <TableTest />
+              
             </div>
           </Box>
         );
@@ -790,7 +810,7 @@ export default function DashboardLayoutAccountSidebar() {
     </AppProvider>
   );
 }
-function moment(isoString: string) {
-  throw new Error('Function not implemented.');
-}
+// function moment(isoString: string) {
+//   throw new Error('Function not implemented.');
+// }
 

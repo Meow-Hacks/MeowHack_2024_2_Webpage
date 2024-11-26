@@ -124,25 +124,7 @@ export const UniversalTable: React.FC<UniversalTableProps> = ({
               ))}
             </TableRow>
           </TableHead>
-          {/* <TableBody>
-            {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
-            ).map((row, index) => (
-              <TableRow key={index}>
-                {columns.map((column) => (
-                  <TableCell key={column.key}>
-                    {row[column.key]}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={columns.length} />
-              </TableRow>
-            )}
-          </TableBody> */}
+
           <TableBody>
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
