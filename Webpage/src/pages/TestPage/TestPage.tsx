@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography } from '@mui/material';
-import TableTest from '@/components/TableTest/TableTest';
+import TableTest from '@/components/TableStudentList/TableStudentList';
 
 
 const TestPage: React.FC = () => {

@@ -20,6 +20,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    MenuItem,
 } from '@mui/material';
 import {
     FirstPage as FirstPageIcon,
@@ -28,6 +29,7 @@ import {
     LastPage as LastPageIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
+    Add as AddIcon,
 } from '@mui/icons-material';
 import StudentPopupComponent from '../StudentPopupComponent/StudentPopupComponent';
 import { Student } from '../../types/Student';
@@ -107,10 +109,21 @@ const TableTest: React.FC = () => {
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
     const [openStudentCard, setOpenStudentCard] = React.useState(false);
+    const [openAddDialog, setOpenAddDialog] = React.useState(false); // New state for Add Dialog
     const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null);
     const [editedStudent, setEditedStudent] = React.useState<Partial<Student>>({});
+    const [newStudent, setNewStudent] = React.useState<Partial<Student>>({
+        name: '',
+        lastname: '',
+        secondname: '',
+        role_id: 2,
+        group_id: undefined,
+        institute_id: undefined,
+        phone: '',
+        mail: '',
+    });
 
-    const { Students, loading, error, updateStudent, deleteStudent } = useAdminStudents();
+    const { Students, loading, error, addStudent, updateStudent, deleteStudent } = useAdminStudents();
     const { Institutes } = useAdminInstitutes();
     const { Groups } = useAdminGroups();
 
@@ -157,7 +170,7 @@ const TableTest: React.FC = () => {
     };
 
     const handleEditClick = (event: React.MouseEvent, student: Student) => {
-        event.stopPropagation(); // Предотвращаем открытие карточки при клике на кнопку
+        event.stopPropagation(); // Prevent opening student card when clicking the button
         setSelectedStudent(student);
         setEditedStudent({
             name: student.name || '',
@@ -172,7 +185,7 @@ const TableTest: React.FC = () => {
     };
 
     const handleDeleteClick = (event: React.MouseEvent, student: Student) => {
-        event.stopPropagation(); // Предотвращаем открытие карточки при клике на кнопку
+        event.stopPropagation(); // Prevent opening student card when clicking the button
         setSelectedStudent(student);
         setOpenDeleteDialog(true);
     };
@@ -182,16 +195,12 @@ const TableTest: React.FC = () => {
     };
 
     const handleEditSave = async () => {
-        console.log('handleEditSave called');
         if (selectedStudent && editedStudent) {
-            console.log('Selected student:', selectedStudent);
-            console.log('Edited student:', editedStudent);
             try {
                 await updateStudent(selectedStudent.id, editedStudent);
                 setOpenEditDialog(false);
                 setSelectedStudent(null);
                 setEditedStudent({});
-                console.log('Student updated successfully');
             } catch (err) {
                 console.error('Ошибка при обновлении студента:', err);
             }
@@ -199,7 +208,6 @@ const TableTest: React.FC = () => {
             console.log('No student selected or editedStudent is empty');
         }
     };
-
 
     const handleDeleteConfirm = async () => {
         if (selectedStudent) {
@@ -214,8 +222,46 @@ const TableTest: React.FC = () => {
         setSelectedStudent(null);
     };
 
+    // Handlers for Add Student
+    const handleAddClick = () => {
+        setNewStudent({
+            name: '',
+            lastname: '',
+            secondname: '',
+            role_id: 2, // Assuming role_id for student is 2
+            group_id: undefined,
+            institute_id: undefined,
+            phone: '',
+            mail: '',
+        });
+        setOpenAddDialog(true);
+    };
+
+    const handleAddChange = (field: string, value: unknown) => {
+        setNewStudent((prevState) => ({ ...prevState, [field]: value }));
+    };
+
+    const handleAddSave = async () => {
+        try {
+            if (newStudent.name && newStudent.lastname && newStudent.mail) {
+                await addStudent([newStudent]);
+                setOpenAddDialog(false);
+                setNewStudent({});
+            } else {
+                console.error('Необходимо заполнить обязательные поля');
+            }
+        } catch (err) {
+            console.error('Ошибка при добавлении студента:', err);
+        }
+    };
+
     return (
         <Box sx={{ p: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddClick}>
+                    Добавить студента
+                </Button>
+            </Box>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                     <TableHead>
@@ -289,6 +335,83 @@ const TableTest: React.FC = () => {
                 </Table>
             </TableContainer>
 
+            {/* Диалоговое окно добавления студента */}
+            <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
+                <DialogTitle>Добавить студента</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Имя"
+                        fullWidth
+                        required
+                        value={newStudent.name || ''}
+                        onChange={(e) => handleAddChange('name', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Фамилия"
+                        fullWidth
+                        required
+                        value={newStudent.lastname || ''}
+                        onChange={(e) => handleAddChange('lastname', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Отчество"
+                        fullWidth
+                        value={newStudent.secondname || ''}
+                        onChange={(e) => handleAddChange('secondname', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Телефон"
+                        fullWidth
+                        value={newStudent.phone || ''}
+                        onChange={(e) => handleAddChange('phone', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Почта"
+                        fullWidth
+                        required
+                        value={newStudent.mail || ''}
+                        onChange={(e) => handleAddChange('mail', e.target.value)}
+                    />
+                    <TextField
+                        select
+                        margin="dense"
+                        label="Институт"
+                        fullWidth
+                        value={newStudent.institute_id || ''}
+                        onChange={(e) => handleAddChange('institute_id', Number(e.target.value))}
+                    >
+                        {Institutes.map((institute) => (
+                            <MenuItem key={institute.id} value={institute.id}>
+                                {institute.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        margin="dense"
+                        label="Группа"
+                        fullWidth
+                        value={newStudent.group_id || ''}
+                        onChange={(e) => handleAddChange('group_id', Number(e.target.value))}
+                    >
+                        {Groups.map((group) => (
+                            <MenuItem key={group.id} value={group.id}>
+                                {group.group_code}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenAddDialog(false)}>Отмена</Button>
+                    <Button onClick={handleAddSave}>Добавить</Button>
+                </DialogActions>
+            </Dialog>
+
             {/* Диалоговое окно редактирования */}
             <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
                 <DialogTitle>Редактировать студента</DialogTitle>
@@ -314,14 +437,6 @@ const TableTest: React.FC = () => {
                         value={editedStudent.secondname || ''}
                         onChange={(e) => handleEditChange('secondname', e.target.value)}
                     />
-                    {/* <TextField
-                        margin="dense"
-                        label="Курс"
-                        type="number"
-                        fullWidth
-                        value={editedStudent.course || ''}
-                        onChange={(e) => handleEditChange('course', parseInt(e.target.value))}
-                    /> */}
                     <TextField
                         margin="dense"
                         label="Телефон"
@@ -336,6 +451,34 @@ const TableTest: React.FC = () => {
                         value={editedStudent.mail || ''}
                         onChange={(e) => handleEditChange('mail', e.target.value)}
                     />
+                    <TextField
+                        select
+                        margin="dense"
+                        label="Институт"
+                        fullWidth
+                        value={editedStudent.institute_id || ''}
+                        onChange={(e) => handleEditChange('institute_id', Number(e.target.value))}
+                    >
+                        {Institutes.map((institute) => (
+                            <MenuItem key={institute.id} value={institute.id}>
+                                {institute.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        margin="dense"
+                        label="Группа"
+                        fullWidth
+                        value={editedStudent.group_id || ''}
+                        onChange={(e) => handleEditChange('group_id', Number(e.target.value))}
+                    >
+                        {Groups.map((group) => (
+                            <MenuItem key={group.id} value={group.id}>
+                                {group.group_code}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenEditDialog(false)}>Отмена</Button>

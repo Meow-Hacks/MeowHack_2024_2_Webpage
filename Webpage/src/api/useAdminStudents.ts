@@ -109,21 +109,22 @@ export const useAdminStudents = (config?: SWRConfiguration) => {
         }
     };
 
-    const addStudent = async (newStudent: NewStudent) => {
+    const addStudent = async (newStudents: Partial<Student>[]) => {
         try {
             const access_token = localStorage.getItem('access_token');
             if (!access_token) throw new Error('Нет access_token');
 
-            const response = await axios.post<Student>(`${API_URL}/admin/students`, newStudent, {
+            const response = await axios.post(`${API_URL}/admin/students`, newStudents, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
+                    'Content-Type': 'application/json',
                 },
             });
 
             await mutate(`${API_URL}/admin/students`);
             return response.data;
         } catch (err) {
-            console.error('Ошибка добавления филиала:', err);
+            console.error('Ошибка добавления студента:', err);
             throw err;
         }
     };
