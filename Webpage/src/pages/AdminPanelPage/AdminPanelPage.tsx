@@ -40,6 +40,7 @@ import { useAdminLessons } from '@/api/useAdminLessons';
 import { useAdminSubjects } from '@/api/useAdminSubjects';
 import { useAdminAuditories } from '@/api/useAdminAuditories';
 import { useAdminTeachers } from '@/api/useAdminTeachers';
+import moment from 'moment';
 
 
 const NAVIGATION: Navigation = [
@@ -328,6 +329,10 @@ export default function DashboardLayoutAccountSidebar() {
     return null; // Если ничего не нашли
   }
 
+  const formatDateTime = (isoString: string): string => {
+    return moment(isoString).format('DD.MM.YYYY HH:mm');
+  };
+
   React.useEffect(() => {
     setShowAdminInfo(false);
   }, [pathname]);
@@ -368,7 +373,7 @@ export default function DashboardLayoutAccountSidebar() {
                 { label: 'Группа', key: 'group_name' }, 
                 { label: 'Преподователь', key: 'teacher_name' },
                 { label: 'Аудитория', key: 'auditory_number' }, 
-                { label: 'Тип пары', key: 'type_of_lesson' },
+                { label: 'Тип пары', key: 'lessons' },
                 { label: 'Начало', key: 'start_time' }, 
                 { label: 'Конец', key: 'end_time' },
                 { label: 'Институт', key: 'institute_name' },
@@ -380,14 +385,16 @@ export default function DashboardLayoutAccountSidebar() {
                     const group = Groups.find((g) => g.id == lesson.group_id);
                     const teacher = Teachers.find((t) => t.id == lesson.teacher_id);
                     const auditory = auditories.find((a) => a.id == lesson.auditory_id);
-                    const start_time = lesson.start_time;
-                    const end_time = lesson.end_time;
+                    const lessons = lesson.type_of_lesson;
+                    const start_time = formatDateTime(lesson.start_time);
+                    const end_time = formatDateTime(lesson.end_time);
                     const institute = Institutes.find((i) => i.id == lesson.institute_id);
                     return {
                       subject_name: subject ? subject.name : 'Не найдено',
                       group_name: group ? group.group_code : 'Не найдено',
-                      teacher_name: teacher ? teacher.name : 'Не найдено',
+                      teacher_name: teacher ? `${teacher.name} ${teacher.secondname} ${teacher.lastname}` : 'Не найдено',
                       auditory_number: auditory ? auditory.name : 'Не найдено',
+                      lessons,
                       start_time,
                       end_time,
                       institute_name: institute ? institute.name : 'Не найдено',
@@ -414,7 +421,43 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>Заварю ка</h3>
-              <UniversalTable columns={columns} data={data} />
+              {/* <UniversalTable columns={columns} data={data} /> */}
+              <UniversalTable
+                columns={[
+                  { label: 'Аудитория', key: 'name' },
+                  { label: 'Вместимость', key: 'capacity' },
+                  { label: 'Филиал', key: 'branch_name' },
+                  {
+                    label: 'Статус',
+                    key: 'status',
+                    render: (status: boolean) => (
+                      <Box display="flex" alignItems="center">
+                        <Box
+                          width={12}
+                          height={12}
+                          borderRadius="50%"
+                          marginRight={1}
+                          style={{
+                            backgroundColor: status ? 'green' : 'red',
+                          }}
+                        />
+                        {status ? '' : ''}
+                      </Box>
+                    ),
+                  },
+                ]}
+                data={auditories.map((aud) => {
+                  const branch = branches.find((b) => b.id === aud.branch_id);
+
+                  return {
+                    name: aud.name,
+                    capacity: aud.capacity,
+                    branch_name: branch ? branch.name : 'Не найдено',
+                    status: aud.status,
+                  };
+                })}
+              />
+
             </div>
           </Box>
         );
