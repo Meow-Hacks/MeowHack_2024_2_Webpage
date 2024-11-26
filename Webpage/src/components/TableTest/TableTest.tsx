@@ -17,33 +17,10 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import StudentPopupComponent from '../StudentPopupComponent/StudentPopupComponent';
 import { Student } from '../../types/Student';
+import { useAdminStudents } from '@/api/useAdminStudents';
+import { useAdminInstitutes } from '@/api/useAdminInstitutes';
+import { useAdminGroups } from '@/api/useAdminGroups';
 
-const students: Student[] = [
-    {
-        id: 1,
-        fullName: 'Иванов Иван Вольдемарабдулшизомедович',
-        institute: 'ИПТИП',
-        course: 3,
-        group: 'ЭФБО-02-22',
-        photo: 'https://yt3.googleusercontent.com/qbWmlj0bPSdlsHE0qSQEP0S-RrN1N-pdTBiJ253XlZ1j2P4xPf-8JvWrfbTmnoOFX5jNQm9nlzU=s900-c-k-c0x00ffffff-no-rj',
-    },
-    {
-        id: 2,
-        fullName: 'Смирнова Мария Вольдемарабдулшизомедовна',
-        institute: 'ИИТ',
-        course: 4,
-        group: 'ЭФБО-01-22',
-        photo: 'https://yt3.googleusercontent.com/qbWmlj0bPSdlsHE0qSQEP0S-RrN1N-pdTBiJ253XlZ1j2P4xPf-8JvWrfbTmnoOFX5jNQm9nlzU=s900-c-k-c0x00ffffff-no-rj',
-    },
-    {
-        id: 3,
-        fullName: 'Бухарестов Вольдемарабдулшизомед Акпантокпантураркожанович-Ибадуллаулывич',
-        institute: 'ИПТИП',
-        course: 1,
-        group: 'ЭФБО-07-22',
-        photo: 'https://yt3.googleusercontent.com/qbWmlj0bPSdlsHE0qSQEP0S-RrN1N-pdTBiJ253XlZ1j2P4xPf-8JvWrfbTmnoOFX5jNQm9nlzU=s900-c-k-c0x00ffffff-no-rj',
-    },
-];
 
 interface TablePaginationActionsProps {
     count: number;
@@ -117,8 +94,32 @@ export default function TableTest() {
     const [open, setOpen] = React.useState(false);
     const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null);
 
+    const { Students, loading, error } = useAdminStudents();
+    const { Institutes } = useAdminInstitutes();
+    const { Groups } = useAdminGroups();
+    
+    if (loading) {
+        return <div>Загрузка...</div>;
+    }
+
+    if (error) {
+        return <div>Ошибка загрузки данных.</div>;
+    }
+
+    const getInstituteName = (id: number | undefined) => {
+        if (!id) return '—';
+        const institute = Institutes.find((inst) => inst.id === id);
+        return institute ? institute.name : 'Не найден';
+    };
+
+    const getGroupName = (id: number | undefined) => {
+        if (!id) return '—';
+        const group = Groups.find((group) => group.id === id);
+        return group ? group.group_code : 'Не найден';
+    };
+
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - students.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Students.length) : 0;
 
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
@@ -158,8 +159,8 @@ export default function TableTest() {
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? students.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : students
+                            ? Students.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            : Students
                         ).map((student) => (
                             <TableRow
                                 key={student.id}
@@ -168,11 +169,11 @@ export default function TableTest() {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {student.fullName}
+                                {student.lastname} {student.name} {student.secondname} 
                                 </TableCell>
-                                <TableCell align="right">{student.institute}</TableCell>
-                                <TableCell align="right">{student.course}</TableCell>
-                                <TableCell align="right">{student.group}</TableCell>
+                                <TableCell align="right">{getInstituteName(student.institute_id) || '—'}</TableCell>
+                                <TableCell align="right">{student.course || '—'}</TableCell>
+                                <TableCell align="right">{getGroupName(student.group_id) || '—'}</TableCell>
                             </TableRow>
                         ))}
                         {emptyRows > 0 && (
@@ -186,7 +187,7 @@ export default function TableTest() {
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, 50]}
                                 colSpan={4}
-                                count={students.length}
+                                count={Students.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

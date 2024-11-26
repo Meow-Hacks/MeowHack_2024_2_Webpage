@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
-interface Subject {
+export interface Subject {
     id: number;
     name: string;
     default_auditory_id: number;

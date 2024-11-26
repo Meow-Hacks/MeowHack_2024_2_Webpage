@@ -51,6 +51,8 @@ export const useAdminStudents = (config?: SWRConfiguration) => {
     const { data, error, isValidating } = useSWR<Student[]>(`${API_URL}/admin/students`, fetcher, {
         ...config,
         shouldRetryOnError: false,
+        revalidateOnFocus: false,
+        revalidateOnMount: false,
     });
 
     const getStudents = async () => {

@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:5173/api';
 
 // Типы данных
-interface Lesson {
+export interface Lesson {
     id: number;
     subject_id: number;
     group_id: number;
