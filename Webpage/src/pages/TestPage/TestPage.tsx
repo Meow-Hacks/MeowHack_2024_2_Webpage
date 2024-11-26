@@ -9,7 +9,7 @@ const TestPage: React.FC = () => {
             <Typography variant="h4" align="center" gutterBottom>
                 Список студентов
             </Typography>
-            <TableTest />
+            {/* <TableTest /> */}
         </Container>
     );
 };

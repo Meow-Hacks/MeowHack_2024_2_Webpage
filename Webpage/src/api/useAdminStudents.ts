@@ -52,7 +52,7 @@ export const useAdminStudents = (config?: SWRConfiguration) => {
         ...config,
         shouldRetryOnError: false,
         revalidateOnFocus: false,
-        revalidateOnMount: false,
+        // revalidateOnMount: false,
     });
 
     const getStudents = async () => {

@@ -1,26 +1,39 @@
+// File: src/components/TableTest/TableTest.tsx
+
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableFooter from '@mui/material/TableFooter';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableHead from '@mui/material/TableHead';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+import {
+    useTheme,
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    TableHead,
+    Paper,
+    IconButton,
+    Button,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from '@mui/material';
+import {
+    FirstPage as FirstPageIcon,
+    KeyboardArrowLeft,
+    KeyboardArrowRight,
+    LastPage as LastPageIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+} from '@mui/icons-material';
 import StudentPopupComponent from '../StudentPopupComponent/StudentPopupComponent';
 import { Student } from '../../types/Student';
 import { useAdminStudents } from '@/api/useAdminStudents';
 import { useAdminInstitutes } from '@/api/useAdminInstitutes';
 import { useAdminGroups } from '@/api/useAdminGroups';
-
 
 interface TablePaginationActionsProps {
     count: number;
@@ -88,16 +101,19 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     );
 }
 
-export default function TableTest() {
+const TableTest: React.FC = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [open, setOpen] = React.useState(false);
+    const [openEditDialog, setOpenEditDialog] = React.useState(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+    const [openStudentCard, setOpenStudentCard] = React.useState(false);
     const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null);
+    const [editedStudent, setEditedStudent] = React.useState<Partial<Student>>({});
 
-    const { Students, loading, error } = useAdminStudents();
+    const { Students, loading, error, updateStudent, deleteStudent } = useAdminStudents();
     const { Institutes } = useAdminInstitutes();
     const { Groups } = useAdminGroups();
-    
+
     if (loading) {
         return <div>Загрузка...</div>;
     }
@@ -137,11 +153,64 @@ export default function TableTest() {
 
     const handleRowClick = (student: Student) => {
         setSelectedStudent(student);
-        setOpen(true);
+        setOpenStudentCard(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleEditClick = (event: React.MouseEvent, student: Student) => {
+        event.stopPropagation(); // Предотвращаем открытие карточки при клике на кнопку
+        setSelectedStudent(student);
+        setEditedStudent({
+            name: student.name || '',
+            lastname: student.lastname || '',
+            secondname: student.secondname || '',
+            group_id: student.group_id || undefined,
+            institute_id: student.institute_id || undefined,
+            phone: student.phone || '',
+            mail: student.mail || '',
+        });
+        setOpenEditDialog(true);
+    };
+
+    const handleDeleteClick = (event: React.MouseEvent, student: Student) => {
+        event.stopPropagation(); // Предотвращаем открытие карточки при клике на кнопку
+        setSelectedStudent(student);
+        setOpenDeleteDialog(true);
+    };
+
+    const handleEditChange = (field: string, value: unknown) => {
+        setEditedStudent((prevState) => ({ ...prevState, [field]: value }));
+    };
+
+    const handleEditSave = async () => {
+        console.log('handleEditSave called');
+        if (selectedStudent && editedStudent) {
+            console.log('Selected student:', selectedStudent);
+            console.log('Edited student:', editedStudent);
+            try {
+                await updateStudent(selectedStudent.id, editedStudent);
+                setOpenEditDialog(false);
+                setSelectedStudent(null);
+                setEditedStudent({});
+                console.log('Student updated successfully');
+            } catch (err) {
+                console.error('Ошибка при обновлении студента:', err);
+            }
+        } else {
+            console.log('No student selected or editedStudent is empty');
+        }
+    };
+
+
+    const handleDeleteConfirm = async () => {
+        if (selectedStudent) {
+            await deleteStudent(selectedStudent.id);
+            setOpenDeleteDialog(false);
+            setSelectedStudent(null);
+        }
+    };
+
+    const handleCloseStudentCard = () => {
+        setOpenStudentCard(false);
         setSelectedStudent(null);
     };
 
@@ -155,6 +224,7 @@ export default function TableTest() {
                             <TableCell align="right">Институт</TableCell>
                             <TableCell align="right">Курс</TableCell>
                             <TableCell align="right">Группа</TableCell>
+                            <TableCell align="right">Действия</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -169,16 +239,30 @@ export default function TableTest() {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <TableCell component="th" scope="row">
-                                {student.lastname} {student.name} {student.secondname} 
+                                    {student.lastname} {student.name} {student.secondname}
                                 </TableCell>
                                 <TableCell align="right">{getInstituteName(student.institute_id) || '—'}</TableCell>
                                 <TableCell align="right">{student.course || '—'}</TableCell>
                                 <TableCell align="right">{getGroupName(student.group_id) || '—'}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton
+                                        onClick={(event) => handleEditClick(event, student)}
+                                        onMouseDown={(event) => event.stopPropagation()}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={(event) => handleDeleteClick(event, student)}
+                                        onMouseDown={(event) => event.stopPropagation()}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={4} />
+                                <TableCell colSpan={5} />
                             </TableRow>
                         )}
                     </TableBody>
@@ -186,7 +270,7 @@ export default function TableTest() {
                         <TableRow>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, 50]}
-                                colSpan={4}
+                                colSpan={5}
                                 count={Students.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
@@ -205,14 +289,82 @@ export default function TableTest() {
                 </Table>
             </TableContainer>
 
+            {/* Диалоговое окно редактирования */}
+            <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+                <DialogTitle>Редактировать студента</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Имя"
+                        fullWidth
+                        value={editedStudent.name || ''}
+                        onChange={(e) => handleEditChange('name', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Фамилия"
+                        fullWidth
+                        value={editedStudent.lastname || ''}
+                        onChange={(e) => handleEditChange('lastname', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Отчество"
+                        fullWidth
+                        value={editedStudent.secondname || ''}
+                        onChange={(e) => handleEditChange('secondname', e.target.value)}
+                    />
+                    {/* <TextField
+                        margin="dense"
+                        label="Курс"
+                        type="number"
+                        fullWidth
+                        value={editedStudent.course || ''}
+                        onChange={(e) => handleEditChange('course', parseInt(e.target.value))}
+                    /> */}
+                    <TextField
+                        margin="dense"
+                        label="Телефон"
+                        fullWidth
+                        value={editedStudent.phone || ''}
+                        onChange={(e) => handleEditChange('phone', e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Почта"
+                        fullWidth
+                        value={editedStudent.mail || ''}
+                        onChange={(e) => handleEditChange('mail', e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenEditDialog(false)}>Отмена</Button>
+                    <Button onClick={handleEditSave}>Сохранить</Button>
+                </DialogActions>
+            </Dialog>
 
-            {selectedStudent && (
+            {/* Диалоговое окно подтверждения удаления */}
+            <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+                <DialogTitle>Удалить студента</DialogTitle>
+                <DialogContent>
+                    Вы уверены, что хотите удалить студента {selectedStudent?.lastname} {selectedStudent?.name}?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDeleteDialog(false)}>Отмена</Button>
+                    <Button onClick={handleDeleteConfirm} color="error">Удалить</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Компонент карточки студента */}
+            {selectedStudent && openStudentCard && (
                 <StudentPopupComponent
-                    open={open}
-                    onClose={handleClose}
+                    open={openStudentCard}
+                    onClose={handleCloseStudentCard}
                     student={selectedStudent}
                 />
             )}
         </Box>
     );
-}
+};
+
+export default TableTest;

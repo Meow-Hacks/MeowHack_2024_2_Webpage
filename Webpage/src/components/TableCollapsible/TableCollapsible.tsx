@@ -15,7 +15,6 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useAdminStudents } from '@/api/useAdminStudents';
-import getSubjectName from '@/utils/utils';
 
 interface StudentMark {
     id: number;
@@ -64,7 +63,7 @@ const CollapsibleTable: React.FC<CollapsibleTableProps> = ({ studentId }) => {
                 // Преобразование в массив
                 const lessonsArray: LessonRow[] = Object.keys(lessonsMap).map((lesson_id) => ({
                     lesson_id: Number(lesson_id),
-                    teacher: 'Иванов И.И.', // Замените на фактического преподавателя, если доступно
+                    teacher: 'Иванов И.И.',
                     marks: lessonsMap[Number(lesson_id)],
                 }));
 
