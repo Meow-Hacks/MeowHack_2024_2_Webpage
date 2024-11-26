@@ -539,8 +539,6 @@ export default function DashboardLayoutAccountSidebar() {
           <Box>
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
-              <h3>Заварю ка</h3>
-              {/* <UniversalTable columns={columns} data={data} /> */}
               <UniversalTable
                 columns={[
                   { label: 'Аудитория', key: 'name' },
@@ -596,8 +594,6 @@ export default function DashboardLayoutAccountSidebar() {
             <Typography variant="h5">Выбранная вкладка: {currentNav?.title || 'Неизвестно'}</Typography>
             <div style={{ height: 400, width: '100%' }}>
               <h3>На</h3>
-              {/* <UniversalTable columns={[{ label: 'Филиал', key: 'name' }, { label: 'Адрес', key: 'address' },]}
-                data={branches} /> */}
               <UniversalTable columns={[{ label: 'Институт', key: 'name' }, { label: 'Филиал', key: 'branch_name' },]}
                 data={
                   Institutes.map((institute) => {
@@ -794,9 +790,7 @@ export default function DashboardLayoutAccountSidebar() {
             <div style={{ height: 400, width: '100%' }}>
               <UniversalTable
                 columns={[
-                  { label: 'имя', key: 'name' },
-                  { label: 'фамилия', key: 'lastname' },
-                  { label: '3', key: 'secondname' },
+                  { label: 'ФИО', key: 'name' },
                   {
                     label: 'Действия',
                     key: 'actions',
@@ -812,7 +806,13 @@ export default function DashboardLayoutAccountSidebar() {
                     ),
                   },
                 ]}
-                data={Teachers}
+                data={
+                  Teachers.map((t) => {
+                    return {
+                      // `${student.lastname} ${student.name} ${student.secondname}`
+                      name: `${t.lastname} ${t.name} ${t.secondname}`
+                    }
+                  }) }
               />
             </div>
 
@@ -842,7 +842,13 @@ export default function DashboardLayoutAccountSidebar() {
                     ),
                   },
                 ]}
-                data={Staffs}
+                data={
+                  Staffs.map((s) => {
+                    return{
+                       name: `${s.lastname} ${s.name} ${s.secondname}`
+                    }
+                  })
+                 }
               />
             </div>
 
