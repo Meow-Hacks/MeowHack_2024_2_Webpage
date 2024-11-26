@@ -810,7 +810,3 @@ export default function DashboardLayoutAccountSidebar() {
     </AppProvider>
   );
 }
-// function moment(isoString: string) {
-//   throw new Error('Function not implemented.');
-// }
-
